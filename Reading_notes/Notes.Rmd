@@ -1,0 +1,93 @@
+---
+title: "Metrics notes"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+
+Methods:
+
+- Bogus items
+- Consistency indices
+- Response pattern analysis
+- Outlier Analysis
+- Response time analysis
+- Self - Report measures
+
+Three post-hoc measures:
+
+- An even-old consistency index 
+- A maximum long-string index
+- A multivariate outlier statistic: the Mahalanobis distance
+
+__Bogus items / Infrequency Approach __
+
+- Bogus items are questions that have an obvious correct answer, so that an incorrect answer can be regarded as not paying attention to the item.
+
+- Preferably in the form of an instructed response, such as: "Respond with strongly agree for this item".
+
+- Can confound with IER with impression management and faking.
+
+__Consistency indices__ (Not suitable for shorter questionnaires.)
+
+- These indices are only useful for questionnaires that do consist of many items and scale.
+
+- An even-odd consistency index : 
+
+  - When the even-odd consistency index cannot be applied due to unavailability of multiple subscales, the psychometric antonyms or psychometric synonyms measures are recommended.
+  
+  
+    
+- Psychometric antonyms : 
+
+  - The psychometric antonyms and/or the psychometric syn- onyms indices can serve as alternatives when multiple subscales are not available.
+  
+  - The psychometric antonyms index is determined by first identifying item pairs with opposite content as indicated by negative inter-item correlations
+
+__Response pattern analysis / Maximum long string__
+
+- The number of times a respondent chooses the same response option consecutively.
+
+- A cutoff score is difficult to establish, particularly for short questionnaires (Can vary from 6 - 14 consecutive responses)
+
+- A method to find a clear cutoff point was to conduct a scree-like test and find an 'elbow' in the data.
+
+
+__Outlier Analysis__
+
+__Response time analysis (Perhaps most widely used)__
+
+- Page time with extremely small values
+
+  - Long Time : It can be explained by the survey respondent is taking a break etc... 
+
+  - Short Time : It is very unlikely that respondents read the item content and answer items seriously when the response time is very short. 
+  
+- Difficult to create concrete rules for response time that differ from normal outlier analysis unless the status of the participant as a C/IE respondeent is already known (unlikely)
+  
+- Need to set a 'cutoff' time.
+
+- Huang et al. (2012) have suggested a cut score for response time at 2 seconds an item,
+
+
+__Self Report measures__
+
+- (Can be too stringent, complex, and computationally intensive)
+
+- E.g. Asking: "In your opinion, should we use your data?" at the end of a questionnaire.
+
+__Mahalanobis Distance__
+
+- Probability values can be computed by converting Mahalanobis distance to chi-square p-values, and a critical p-value can be selected to flag suspicious respondents. 
+
+- This only holds when the assumption of multivariate normality of the item scores is met. Considering the number of response options that are used in survey data, it is unlikely that this assumption will hold.
+
+
+__Explicit instructed response item__
+
+- Instruct the respondents to choose a specific response. 
+
+- Problem: How many items to include in a questionnaires and what is cutoff score?
+
+__The use of any of these techniques should not be applied in a vacuum void of other techniques. __
+
+The known negative relationship between different metrics (Meade & Craig, 2012) means that the differential application of techniques has the potential to remove certain sets of C/IE responders while retaining others who are equally invalid. For instance, simply using a method that examines consistency of response as a positive characteristic and neglecting a method that looks at excess consistency of response as a negative characteristic is likely to remove those individuals providing highly variable invalid responses while retaining those that are func- tionally invariant (e.g., all ‘Strongly Agree’ responses)
