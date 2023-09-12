@@ -2,13 +2,15 @@
 title: "Survey Quality Metrics Notes"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
-  pdf_document: default
+  pdf_document:
+    toc: true
+    toc_depth: 3
   html_document: default
 ---
 
-### Careless / Insufficient Effort Responding (IER) / Satisficing 
+__Careless / Insufficient Effort Responding (IER) / Satisficing __
 
-__Bogus items / Infrequency Approach __
+### Bogus items / Infrequency Approach ###
 
 - Definition:
   - Bogus items are questions that have an obvious correct answer, so that an incorrect answer can be regarded as not paying attention to the item.
@@ -67,7 +69,8 @@ __Response pattern analysis / Maximum long string / Straight-lining / non-differ
 
 - Implementations: 
   - Use hypothesis testing (see Cornesse, 2020, page 12)
-  - The same response option more than 6/9/10/14 times can be considered as IER. 
+  - The same response option more than 6/9/10/14 times can be considered as IER.
+  - Low amount of variance for series of related questions using the same response alternatives or no variation at all. (Straight-lining)
 
 - For:
 
@@ -100,6 +103,7 @@ __Outlier Analysis__
 - Definition: 
   - Unusual data point relative to the remainder of a distribution.
   - Individuals who are responding without sufficient effort are likely to differ from their thoughtful counter-parts.
+  - __Response time__, __frequency of occurrence__
   
 - Implementation:
   - Examine one value from a distribution relative to other values in that distribution. 
@@ -140,7 +144,7 @@ __Explicit instructed response item__
 
 - Problem: How many items to include in a questionnaires and what is cutoff score?
 
-__Item non-response__
+__Item non-response / Missing data__
 
 - Definition: 
   - Skip questions or give a nonsubstantive answer, i.e., answer 'don't know' or 'don't want to say'.
@@ -172,8 +176,33 @@ __Self Report measures__
 
 - E.g. Asking: "In your opinion, should we use your data?" at the end of a questionnaire.
 
+__Acquiescence__
+
+- Definition: 
+  - Proportion of YES/NO variables answering "Yes"
+  - Proportion of Agree-Disagree variable answered "Agree"
+
+__Contrariness__
+
+- Definition:
+  - Proportion of Yes/No variables answering “No”
+  - Proportion of Agree-Disagree variable answered “Disagree”
+  - But maybe correlate too highly with Acquiescence to be of value
+  
+__Extremism__
+- Definition:
+  - Proportion of answers to variables with three of more response alternatives that are the first or last answer in the list
+
+__First / Last response alternative__
+- Definition:
+  - Proportion of times the __first / last__ response alternative is chosen in items with three of more response alternatives 
+
+__High degree of Variation__
+- Definition:
+  - High amount of variance for series of related questions using the same response alternatives 
+
 __NOTES:__
 
 - The use of any of these techniques should not be applied in a vacuum void of other techniques. 
-  - The known negative relationship between different metrics (Meade & Craig, 2012) means that the differential application of techniques has the potential to remove certain sets of C/IE responders while retaining others who are equally invalid. For instance, simply using a method that examines consistency of response as a positive characteristic and neglecting a method that looks at excess consistency of response as a negative characteristic is likely to remove those individuals providing highly variable invalid responses while retaining those that are func- tionally invariant (e.g., all ‘Strongly Agree’ responses)
+  - The known negative relationship between different metrics (Meade & Craig, 2012) means that the differential application of techniques has the potential to remove certain sets of C/IE responders while retaining others who are equally invalid. For instance, simply using a method that examines consistency of response as a positive characteristic and neglecting a method that looks at excess consistency of response as a negative characteristic is likely to remove those individuals providing highly variable invalid responses while retaining those that are functionally invariant (e.g., all ‘Strongly Agree’ responses)
 
