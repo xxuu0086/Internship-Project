@@ -173,9 +173,6 @@ Note: Can be used as a good start to remove some worst worst respondents before 
   - if applicable, use hypothesis testing (see Cornesse, 2020, page 12)
   - Calculate the percentage of missing value for each panels. (for skip question)
   
-- For:
-
-- Against:
   
 ### Midpoint selection
 
@@ -186,9 +183,6 @@ Note: Can be used as a good start to remove some worst worst respondents before 
   - Use hypothesis testing on (see Cornesse, 2020, page 13)
   - (proportion of respondents chooses an answer option when it is located at the visual midpoint)
   
-- For:
-
-- Against:
 
 ### Self Report measures
 
@@ -213,7 +207,7 @@ Note: Can be used as a good start to remove some worst worst respondents before 
 - Definition:
   - Proportion of answers to variables with three of more response alternatives that are the first or last answer in the list
 
-### First / Last response alternative_
+### First / Last response alternative
 - Definition:
   - Proportion of times the __first / last__ response alternative is chosen in items with three of more response alternatives 
 
