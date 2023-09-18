@@ -8,7 +8,7 @@ output:
   html_document: default
 ---
 
-__Careless / Insufficient Effort Responding (IER) / Satisficing __
+_Careless / Insufficient Effort Responding (IER) / Satisficing _
 
 ### Bogus items / Infrequency Approach ###
 
@@ -18,6 +18,7 @@ __Careless / Insufficient Effort Responding (IER) / Satisficing __
   - E.g., "I was born on $30^{th}$ FEB"
   
 - Implementation:
+  - Use the bogus item in the survey to identify the careless respondents or IER.
 
 - For:
   - Easy to implement
@@ -25,24 +26,32 @@ __Careless / Insufficient Effort Responding (IER) / Satisficing __
 - Against:
   - Can easily confound with IER with impression management and faking.
   
-__Individual consistency / Inconsistent Approach / psychometric antonym / Individual reliability __
+### Individual consistency / Inconsistent Approach / psychometric antonyms / semantic antonyms / Individual reliability 
 
-- Individual consistency:
-  - odd–even consistency and resampled individual reliability
+_Individual consistency(Curran, 2016):_
+
+  - Odd–even consistency and Resampled individual reliability 
   - semantic and psychometric antonyms/synonyms
-  - inter-item standard deviation
+  - inter-item standard deviation 
+    - Calculate the variation from the mean, higher higher values on ISD are more indicative of random responding, contradiction to long-string. 
   - Polytomous Guttman Errors
-  - person total correlation
+    - $G = \sum_{h, e}X_{nh}(1 - X_{ne})$
+  - person total correlation 
+    - A measure of how consistently each person is acting like all other respondents(mean of other respondents)
+    - Dependent on majority of survey respondents
+    - Assumption: Majority of respondents are responding thoughtfully.
   
 - Definition:
-  - Consistency of a response string within an individual
+  - Check consistency of responses within an individual
   - This approach typically uses matched item pairs and compares the response on one item to the response on the other item
   - Should be highly positively/negatively correlated, if not, then IER
 
 - Implementation:
-  - Test correlation
+  - Use the pairwise questions and Test correlation
 
 - For:
+  - Easy to implement
+  - Hard to fake the response
   
 
 - Against:
@@ -63,6 +72,8 @@ __Individual consistency / Inconsistent Approach / psychometric antonym / Indivi
 
 __Response pattern analysis / Maximum long string / Straight-lining / non-differentiation__
 
+Note: Can be used as a good start to remove some worst worst respondents before applying more complex techniques
+
 - Definition: 
   - Refers to the tendency of respondents to choose the same or a very similar answer option for each item in a grid.
   - The number of times a respondent chooses the same response option consecutively.
@@ -71,11 +82,18 @@ __Response pattern analysis / Maximum long string / Straight-lining / non-differ
   - Use hypothesis testing (see Cornesse, 2020, page 12)
   - The same response option more than 6/9/10/14 times can be considered as IER.
   - Low amount of variance for series of related questions using the same response alternatives or no variation at all. (Straight-lining)
+  - Examining the longest string of identical responses 
+  - Use _visualisations technique_ e.g. line plot: a horizontal line = the same response.
 
 - For:
+  - Fairly straightforward and easy to implement
 
 - Against:
   - A cutoff score is difficult to establish, particularly for short questionnaires (Can vary from 6 - 14 consecutive responses)
+  - Responders who take the time to occasionally vary their response in minimal ways may also easily fool this method. 
+  - Need assumptions : 
+    - The individuals who are responding carelessly may do so by choosing the same response option to every question. 
+    - The individuals who are responding carefully, and with sufficient effort, will not use the same response option for long periods of time.
 
 
 __Response time analysis (Perhaps most widely used)__
@@ -94,9 +112,11 @@ __Response time analysis (Perhaps most widely used)__
   - Huang et al. (2012) have suggested a cut score for response time at 2 seconds an item
 
 - For:
+  - Fairly simple
 
 - Against:
   - Difficult to create concrete rules for response time that differ from normal outlier analysis unless the status of the participant as a C/IE respondent is already known (unlikely)
+  - Hard to identify if the IER responder spend more time on each page. 
 
 __Outlier Analysis__
 
@@ -128,7 +148,7 @@ __Mahalanobis Distance__
   - A simple extension of normal outlier analysis into multivariate space. 
 
 - Implementation:
-  - Calculate the distance of points from the multivariate center. 
+  - Calculate the distance of points from the multivariate center. (Curran, 2016, page)
 
 - For:
   - Able to tell that the observation is on the outskirts of the multivariate distribution formed by responses to all items. 
@@ -200,6 +220,11 @@ __First / Last response alternative__
 __High degree of Variation__
 - Definition:
   - High amount of variance for series of related questions using the same response alternatives 
+  
+__Trap Questions__
+- Definition:
+  - Including a trap question which requires someone to read it carefully and the do what the question requestion in answering it. “Failing” such a question is a metric of low or no attention to completing the questionnaire.
+
 
 __NOTES:__
 
