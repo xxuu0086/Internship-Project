@@ -1,0 +1,23 @@
+---
+title: "Report"
+output: pdf_document
+date: "`r Sys.Date()`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE)
+```
+
+```{r}
+library(tidyverse)
+library(haven)
+
+dat <- haven::read_sav("../Data and survey materials/ACSSM Final Data_27-Feb-2023 weighted.sav")
+
+summary(dat)
+
+```
+
+
