@@ -70,7 +70,7 @@ _Individual consistency(Curran, 2016):_
 
 - (See Curran 2016)
 
-__Response pattern analysis / Maximum long string / Straight-lining / non-differentiation__
+### Response pattern analysis / Maximum long string / Straight-lining / non-differentiation
 
 Note: Can be used as a good start to remove some worst worst respondents before applying more complex techniques
 
@@ -96,7 +96,7 @@ Note: Can be used as a good start to remove some worst worst respondents before 
     - The individuals who are responding carefully, and with sufficient effort, will not use the same response option for long periods of time.
 
 
-__Response time analysis (Perhaps most widely used)__
+### Response time analysis (Perhaps most widely used)
 
 - Definition:
   - Use page time for this approach, page time is the time between the initiation and submission of each survey page online.
@@ -118,7 +118,7 @@ __Response time analysis (Perhaps most widely used)__
   - Difficult to create concrete rules for response time that differ from normal outlier analysis unless the status of the participant as a C/IE respondent is already known (unlikely)
   - Hard to identify if the IER responder spend more time on each page. 
 
-__Outlier Analysis__
+### Outlier Analysis
 
 - Definition: 
   - Unusual data point relative to the remainder of a distribution.
@@ -141,7 +141,7 @@ __Outlier Analysis__
 
 - This only holds when the assumption of multivariate normality of the item scores is met. Considering the number of response options that are used in survey data, it is unlikely that this assumption will hold.
 
-__Mahalanobis Distance__
+### Mahalanobis Distance
 
 - Definition:
   - Similar to outlier analysis, but it is a multivariate outlier technique 
@@ -157,14 +157,14 @@ __Mahalanobis Distance__
   - Computationally intensive procedure
   - Rely on certain degree of normality in the data. 
   
-__Explicit instructed response item__
+### Explicit instructed response item
 
 - Definition:
   - Instruct the respondents to choose a specific response. 
 
 - Problem: How many items to include in a questionnaires and what is cutoff score?
 
-__Item non-response / Missing data__
+### Item non-response / Missing data
 
 - Definition: 
   - Skip questions or give a nonsubstantive answer, i.e., answer 'don't know' or 'don't want to say'.
@@ -177,7 +177,7 @@ __Item non-response / Missing data__
 
 - Against:
   
-__Midpoint selection__
+### Midpoint selection
 
 - Definition:
   - A visual design experiment in our questionnaire to investigate whether respondents answer consistently across different answer scales.
@@ -190,38 +190,38 @@ __Midpoint selection__
 
 - Against:
 
-__Self Report measures__
+### Self Report measures
 
 - (Can be too stringent, complex, and computationally intensive)
 
 - E.g. Asking: "In your opinion, should we use your data?" at the end of a questionnaire.
 
-__Acquiescence__
+### Acquiescence
 
 - Definition: 
   - Proportion of YES/NO variables answering "Yes"
   - Proportion of Agree-Disagree variable answered "Agree"
 
-__Contrariness__
+### Contrariness
 
 - Definition:
   - Proportion of Yes/No variables answering “No”
   - Proportion of Agree-Disagree variable answered “Disagree”
   - But maybe correlate too highly with Acquiescence to be of value
   
-__Extremism__
+### Extremism
 - Definition:
   - Proportion of answers to variables with three of more response alternatives that are the first or last answer in the list
 
-__First / Last response alternative__
+### First / Last response alternative_
 - Definition:
   - Proportion of times the __first / last__ response alternative is chosen in items with three of more response alternatives 
 
-__High degree of Variation__
+### High degree of Variation
 - Definition:
   - High amount of variance for series of related questions using the same response alternatives 
   
-__Trap Questions__
+### Trap Questions
 - Definition:
   - Including a trap question which requires someone to read it carefully and the do what the question requestion in answering it. “Failing” such a question is a metric of low or no attention to completing the questionnaire.
 
