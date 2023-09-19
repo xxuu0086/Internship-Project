@@ -14,10 +14,20 @@ knitr::opts_chunk$set(echo = TRUE,
 library(tidyverse)
 library(haven)
 
-dat <- haven::read_sav("../Data and survey materials/ACSSM Final Data_27-Feb-2023 weighted.sav")
-
-summary(dat)
-
+data0 <- haven::read_sav("../Data and survey materials/ACSSM Final Data_27-Feb-2023 weighted.sav")
 ```
 
 
+### Introduction and Motivation
+(readings)
+
+### Data Description
+
+### Problems
+
+### Analysis
+
+### Summary
+
+### Appendix
+### 
