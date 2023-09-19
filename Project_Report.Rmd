@@ -21,13 +21,16 @@ data0 <- haven::read_sav("../Data and survey materials/ACSSM Final Data_27-Feb-2
 ### Introduction and Motivation
 (readings)
 
+### Survey quality metrics
+
 ### Data Description
 
-### Problems
+### Chanllenges
+- Understand the metrics
+- matching the metrics to variables
 
 ### Analysis
 
 ### Summary
 
 ### Appendix
-### 
