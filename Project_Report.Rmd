@@ -14,23 +14,33 @@ knitr::opts_chunk$set(echo = TRUE,
 library(tidyverse)
 library(haven)
 
-data0 <- haven::read_sav("../Data and survey materials/ACSSM Final Data_27-Feb-2023 weighted.sav")
+dat <- haven::read_sav("../Data and survey materials/ACSSM Final Data_27-Feb-2023 weighted.sav")
+```
+
+```{r}
+# dat %>% select(starts_with("TV_TIME")) %>% filter(TV_TIME_c == 6) %>% mutate("TOTAL" = TV_TIME_a+ TV_TIME_b+TV_TIME_c+ TV_TIME_d+ TV_TIME_e+ TV_TIME_f) %>% arrange(-TOTAL)
 ```
 
 
-### Introduction and Motivation
-(readings)
+# Introduction and Motivation
+(include the readings)
 
-### Survey quality metrics
+# Survey quality metrics
 
-### Data Description
+# Data Description
 
-### Chanllenges
+# Chanllenges
 - Understand the metrics
 - matching the metrics to variables
 
-### Analysis
+# Preliminary Analysis
 
-### Summary
+# Analysis
 
-### Appendix
+# Limitation
+
+# Summary
+
+# Reference
+
+# Appendix
