@@ -1,8 +1,41 @@
 ---
-title: "Report"
-output: pdf_document
-date: "`r Sys.Date()`"
+title: |
+  ETC5543 Business Analytics Creative Activity 
+  
+  Project Report
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+author:
+  - Xianghe XU 
+  
+team: Group 1
+subtitle: |
+  Department of Econometrics and Business Statistics
+
+  Monash University
+  
+  | - 
+  
+  __An investigation report on performance of probability-based panels compared to other methods.__
+  
+  | -
+abstract: "The aim of this report..."
+header-includes: 
+  - \renewcommand{\and}{\\ \\}
+  - \AddToHook{env/abstract/before}{\vspace*{2cm}}
+  - \makeatletter\AddToHook{cmd/@date/before}{\vspace*{2cm}}\makeatother
+output:
+  bookdown::pdf_document2:
+    toc: FALSE
+    number_sections: TRUE
+  html_document: default
+
+
 ---
+\newpage
+
+\newpage
+\tableofcontents
+\newpage
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,
