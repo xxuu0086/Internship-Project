@@ -74,7 +74,11 @@ dat <- haven::read_sav("../Data and survey materials/ACSSM Final Data_27-Feb-202
 
 # Summary
 
+\newpage
+
 # Reference
+
+\newpage
 
 # Appendix: All code for this report
 
