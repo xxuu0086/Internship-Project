@@ -62,6 +62,12 @@ dat <- haven::read_sav("../Data and survey materials/ACSSM Final Data_27-Feb-202
 ```
 
 ```{r}
+# Add column to indicate probability based and non-probability based
+dat1 <- dat %>% 
+  mutate(prob_based = ifelse(DataSource <= 5, "Probablity based", "Non-probablity based"))
+```
+
+```{r}
 dat %>% 
   group_by(DataSource) %>% 
   summarise(Total_participant = n()) %>% 
@@ -69,19 +75,40 @@ dat %>%
              y = Total_participant)) +
   geom_col() + 
   theme_classic()
+
 ```
 
 ```{r}
-dat %>% 
-  # filter(Section_SUM_main < 100) %>% 
+dat1 %>% 
+  filter(Section_SUM_main < 120) %>% 
   ggplot(aes(x = as.factor(DataSource),
                    y = Section_SUM_main,
-                   color = as.factor(DataSource))) +
+                   color = prob_based)) +
   geom_point() + 
   geom_violin() + 
+  geom_hline(yintercept = 70 * 2 / 60, color = "red", size = 1) +
+  geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2)) +
+  scale_color_brewer(palette = "Set1") +
   theme_bw() +
   labs(x = "",
-       y = "")
+       y = "Total time for sections in minutes",
+       color = "",
+       title = "Distributions of time answering the survey questions for panels ")
+
+dat1 %>% 
+  filter(Section_SUM_main < 20) %>% 
+  ggplot(aes(x = as.factor(DataSource),
+                   y = Section_SUM_main,
+                   color = prob_based)) +
+  geom_point() + 
+  geom_violin() + 
+  geom_hline(yintercept = 70 * 2 / 60, color = "red", size = 1) +
+  theme_bw() +
+  labs(x = "",
+       y = "Total time for sections in minutes",
+       color = "",
+       title = "Distributions of time answering the survey questions for panels ")
+
 ```
 
 
