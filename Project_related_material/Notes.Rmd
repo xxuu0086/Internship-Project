@@ -33,7 +33,7 @@ _Individual consistency(Curran, 2016):_
   - Odd–even consistency and Resampled individual reliability 
   - semantic and psychometric antonyms/synonyms
   - inter-item standard deviation 
-    - Calculate the variation from the mean, higher higher values on ISD are more indicative of random responding, contradiction to long-string. 
+    - Calculate the variation from the mean, higher the values on ISD are more indicative of random responding, contradiction to long-string. 
   - Polytomous Guttman Errors
     - $G = \sum_{h, e}X_{nh}(1 - X_{ne})$
   - person total correlation 
