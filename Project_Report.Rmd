@@ -54,6 +54,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r}
+# Load packages and data
 library(tidyverse)
 library(haven)
 
@@ -61,7 +62,70 @@ dat <- haven::read_sav("../Data and survey materials/ACSSM Final Data_27-Feb-202
 ```
 
 ```{r}
+dat %>% 
+  group_by(DataSource) %>% 
+  summarise(Total_participant = n()) %>% 
+  ggplot(aes(x = as.factor(DataSource),
+             y = Total_participant)) +
+  geom_col() + 
+  theme_classic()
+```
+
+```{r}
+dat %>% 
+  # filter(Section_SUM_main < 100) %>% 
+  ggplot(aes(x = as.factor(DataSource),
+                   y = Section_SUM_main,
+                   color = as.factor(DataSource))) +
+  geom_point() + 
+  geom_violin() + 
+  theme_bw() +
+  labs(x = "",
+       y = "")
+```
+
+
+```{r}
+# page time
+dat %>% select(DataSource,
+               Section_Length_4:Section_Length_9,
+               -Section_Length_8) %>% 
+  rowwise() %>% 
+  mutate("ave" = sum(c(Section_Length_4,
+                       Section_Length_5,
+                       Section_Length_6,
+                       Section_Length_7,
+                       Section_Length_9), na.rm = TRUE) *60 /64) %>% 
+  filter(ave > 0,
+         ave < 2) %>% 
+  group_by(DataSource) %>% 
+  summarise(count = n()) %>% 
+  mutate(DataSource = as.factor(DataSource)) %>% 
+  ggplot(aes(x = DataSource,
+             y = count)) + 
+  geom_col() + 
+  theme_classic()
+  
+```
+```{r}
+dat %>% 
+  select()
+```
+
+```{r}
 # dat %>% select(starts_with("TV_TIME")) %>% filter(TV_TIME_c == 6) %>% mutate("TOTAL" = TV_TIME_a+ TV_TIME_b+TV_TIME_c+ TV_TIME_d+ TV_TIME_e+ TV_TIME_f) %>% arrange(-TOTAL)
+
+# Example code of mahalanobis 
+
+# dat <- data.frame(ar = rnorm(200,1,2),
+#                   be = rbinom(200,3,0.2),
+#                   wo = runif(200))
+# head(dat)
+# S <- var(dat)
+# mu <- colMeans(dat)
+# D2 <- mahalanobis(dat,
+#                   center = mu,
+#                   cov = S)
 ```
 
 
@@ -88,10 +152,19 @@ dat <- haven::read_sav("../Data and survey materials/ACSSM Final Data_27-Feb-202
 
 # Reference
 
+__Citation of R package__
+
+Wickham H, Averick M, Bryan J, Chang W, McGowan LD, François R, Grolemund G, Hayes A, Henry L, Hester J, Kuhn M, Pedersen TL,
+  Miller E, Bache SM, Müller K, Ooms J, Robinson D, Seidel DP, Spinu V, Takahashi K, Vaughan D, Wilke C, Woo K, Yutani H (2019).
+  “Welcome to the tidyverse.” _Journal of Open Source Software_, *4*(43), 1686. doi:10.21105/joss.01686
+  <https://doi.org/10.21105/joss.01686>.
+  
+Xie Y (2023). _bookdown: Authoring Books and Technical Documents with R Markdown_. R
+  package version 0.35, <https://github.com/rstudio/bookdown>.
+  
 \newpage
 
 # Appendix: All code for this report
 
 ```{r ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
 ```
-
