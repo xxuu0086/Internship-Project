@@ -68,17 +68,23 @@ dat1 <- dat %>%
 ```
 
 ```{r}
-dat %>% 
-  group_by(DataSource) %>% 
-  summarise(Total_participant = n()) %>% 
+# distribution of page time for section 2, 4-9
+dat1 %>% 
+  # filter(Section_SUM_main < 120) %>% 
   ggplot(aes(x = as.factor(DataSource),
-             y = Total_participant)) +
-  geom_col() + 
-  theme_classic()
+                   y = Section_SUM_main,
+                   color = prob_based)) +
+  geom_point() + 
+  geom_violin() + 
+  geom_hline(yintercept = 70 * 2 / 60, color = "red", size = 1) +
+  geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2), show.legend = FALSE) +
+  scale_color_brewer(palette = "Set1") +
+  theme_bw() +
+  labs(x = "",
+       y = "Total time for sections in minutes",
+       color = "",
+       title = "Distributions of time answering the survey questions for panels ")
 
-```
-
-```{r}
 dat1 %>% 
   filter(Section_SUM_main < 120) %>% 
   ggplot(aes(x = as.factor(DataSource),
@@ -87,7 +93,7 @@ dat1 %>%
   geom_point() + 
   geom_violin() + 
   geom_hline(yintercept = 70 * 2 / 60, color = "red", size = 1) +
-  geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2)) +
+  geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2), show.legend = FALSE) +
   scale_color_brewer(palette = "Set1") +
   theme_bw() +
   labs(x = "",
@@ -114,9 +120,10 @@ dat1 %>%
 
 ```{r}
 # page time
-dat %>% select(DataSource,
+dat1 %>% select(DataSource,
                Section_Length_4:Section_Length_9,
-               -Section_Length_8) %>% 
+               -Section_Length_8,
+               prob_based) %>% 
   rowwise() %>% 
   mutate("ave" = sum(c(Section_Length_4,
                        Section_Length_5,
@@ -128,13 +135,19 @@ dat %>% select(DataSource,
   group_by(DataSource) %>% 
   summarise(count = n()) %>% 
   mutate(DataSource = as.factor(DataSource)) %>% 
+  mutate(prob_based = c("Probability based", "Probability based", "Non-Probability based", "Non-Probability based", "Non-Probability based","Non-Probability based","Non-Probability based")) %>% 
   ggplot(aes(x = DataSource,
-             y = count)) + 
+             y = count,
+             fill = prob_based)) + 
   geom_col() + 
-  theme_classic()
-  
+  theme_bw() +
+  labs(x = "",
+       y = "Total time for sections in minutes",
+       color = "",
+       title = "Distributions of time answering the survey questions for panels ")
 ```
 ```{r}
+# Percentage of item non-response
 dat %>% 
   select()
 ```
