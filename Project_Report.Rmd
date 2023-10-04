@@ -149,7 +149,9 @@ dat1 %>% select(DataSource,
 ```{r}
 # Percentage of item non-response
 dat %>% 
-  select()
+  select(c(GENDER:SUBURB,
+           IMPPROB:INCOME)) %>% 
+  names()
 ```
 
 ```{r}
