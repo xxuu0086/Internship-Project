@@ -149,9 +149,16 @@ dat1 %>% select(DataSource,
 ```{r}
 # Percentage of item non-response
 dat %>% 
-  select(c(GENDER:SUBURB,
-           IMPPROB:INCOME)) %>% 
-  names()
+  mutate()
+  select(c(DataSource,
+           GENDER:SUBURB,
+           IMPPROB:INCOME,
+           -IMPPROB_VERB,
+           -GENDER_oth,
+           -SUBURB)) %>% 
+  pivot_longer(GENDER:INCOME,
+               names_to = "Question",
+               values_to = "Answer")
 ```
 
 ```{r}
