@@ -214,7 +214,7 @@ Item_non_response %>%
 
 ```{r}
 # Straight lining
-dat1 %>% 
+straight_lining <- dat1 %>% 
   select(DataSource,
          starts_with("K6_"),
          starts_with("TV_TIME_"),
@@ -239,6 +239,10 @@ dat1 %>%
   mutate(straight_lining = ifelse(sum(K6_IER, 
                                       TV_TIME_IER,
                                       INTERNET_IER) >= 2, 1, 0))
+
+straight_lining %>% 
+  select(DataSource, straight_lining) %>% 
+  table()
 ```
 
 ```{r}
