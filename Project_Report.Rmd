@@ -213,6 +213,15 @@ Item_non_response %>%
 ```
 
 ```{r}
+# Straight lining
+dat1 %>% 
+  select(DataSource,
+         starts_with("K6_")) %>% 
+  rowwise() %>% 
+  mutate(K6_IER = ifelse(length(unique(K6_a:K6_b)) == 1, 1, 0))
+```
+
+```{r}
 # dat %>% select(starts_with("TV_TIME")) %>% filter(TV_TIME_c == 6) %>% mutate("TOTAL" = TV_TIME_a+ TV_TIME_b+TV_TIME_c+ TV_TIME_d+ TV_TIME_e+ TV_TIME_f) %>% arrange(-TOTAL)
 
 # Example code of mahalanobis 
@@ -227,6 +236,7 @@ Item_non_response %>%
 #                   center = mu,
 #                   cov = S)
 ```
+
 
 
 # Introduction and Motivation
