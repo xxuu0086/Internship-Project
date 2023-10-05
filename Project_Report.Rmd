@@ -244,6 +244,14 @@ straight_lining %>%
   select(DataSource, straight_lining) %>% 
   table()
 ```
+```{r}
+# Middle point selection
+dat1 %>% 
+  select(DataSource,
+         starts_with("K6_")) %>% 
+  rowwise() %>% 
+  filter(across(starts_with("K6_")) == 3)
+```
 
 ```{r}
 # dat %>% select(starts_with("TV_TIME")) %>% filter(TV_TIME_c == 6) %>% mutate("TOTAL" = TV_TIME_a+ TV_TIME_b+TV_TIME_c+ TV_TIME_d+ TV_TIME_e+ TV_TIME_f) %>% arrange(-TOTAL)
