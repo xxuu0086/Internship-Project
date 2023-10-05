@@ -76,8 +76,8 @@ dat1 %>%
                    color = prob_based)) +
   geom_point() + 
   geom_violin() + 
-  geom_hline(yintercept = 70 * 2 / 60, color = "red", size = 1) +
-  geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2), show.legend = FALSE) +
+  geom_hline(yintercept = 70 * 2 / 60, color = "purple", size = 1) +
+  geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2), show.legend = FALSE, color = "purple") +
   scale_color_brewer(palette = "Set1") +
   theme_bw() +
   labs(x = "",
@@ -92,8 +92,8 @@ dat1 %>%
                    color = prob_based)) +
   geom_point() + 
   geom_violin() + 
-  geom_hline(yintercept = 70 * 2 / 60, color = "red", size = 1) +
-  geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2), show.legend = FALSE) +
+  geom_hline(yintercept = 70 * 2 / 60, color = "purple", size = 1) +
+  geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2), show.legend = FALSE, color = "purple") +
   scale_color_brewer(palette = "Set1") +
   theme_bw() +
   labs(x = "",
@@ -102,13 +102,15 @@ dat1 %>%
        title = "Distributions of time answering the survey questions for panels ")
 
 dat1 %>% 
-  filter(Section_SUM_main < 20) %>% 
+  filter(Section_SUM_main < 120) %>% 
   ggplot(aes(x = as.factor(DataSource),
                    y = Section_SUM_main,
                    color = prob_based)) +
   geom_point() + 
   geom_violin() + 
-  geom_hline(yintercept = 70 * 2 / 60, color = "red", size = 1) +
+  geom_hline(yintercept = 70 * 2 / 60, color = "purple", size = 1) +
+  geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2), show.legend = FALSE, color = "purple") +
+  scale_color_brewer(palette = "Set1") +
   theme_bw() +
   labs(x = "",
        y = "Total time for sections in minutes",
