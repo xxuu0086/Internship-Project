@@ -216,9 +216,29 @@ Item_non_response %>%
 # Straight lining
 dat1 %>% 
   select(DataSource,
-         starts_with("K6_")) %>% 
+         starts_with("K6_"),
+         starts_with("TV_TIME_"),
+         starts_with("INTERNET")) %>% 
   rowwise() %>% 
-  mutate(K6_IER = ifelse(length(unique(K6_a:K6_b)) == 1, 1, 0))
+  mutate(K6_IER = ifelse(length(unique(c(K6_a,
+                                         K6_b,
+                                         K6_c,
+                                         K6_d,
+                                         K6_e,
+                                         K6_f))) == 1, 1, 0)) %>% 
+  mutate(TV_TIME_IER = ifelse(length(unique(c(TV_TIME_a,
+                                              TV_TIME_b,
+                                              TV_TIME_c,
+                                              TV_TIME_d,
+                                              TV_TIME_e,
+                                              TV_TIME_f))) == 1, 1, 0)) %>% 
+  mutate(INTERNET_IER = ifelse(length(unique(c(INTERNET_a,
+                                              INTERNET_b,
+                                              INTERNET_c,
+                                              INTERNET_d))) == 1, 1, 0)) %>% 
+  mutate(straight_lining = ifelse(sum(K6_IER, 
+                                      TV_TIME_IER,
+                                      INTERNET_IER) >= 2, 1, 0))
 ```
 
 ```{r}
