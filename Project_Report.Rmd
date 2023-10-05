@@ -249,13 +249,51 @@ straight_lining %>%
 ```
 
 ```{r}
-# Middle point selection
+# Middle point selection (Frequency count)
 dat1 %>% 
   select(DataSource,
          starts_with("K6_")) %>% 
-  rowwise() %>% 
-  filter(across(starts_with("K6_")) == 3)
+  pivot_longer(K6_a:K6_f,
+               names_to = "K6_name",
+               values_to = "K6_value") %>% 
+  mutate(DataSource = as.factor(DataSource),
+         K6_value = as.numeric(K6_value)) %>% 
+  filter(K6_value == 3) %>% 
+  group_by(DataSource, K6_name) %>% 
+  summarise(count = n()) %>% 
+  ggplot(aes(x = DataSource,
+             y = count,
+             fill = K6_name)) +
+  geom_col(position = "stack") + 
+  scale_fill_brewer(palette = "Set3") +
+  theme_bw()
 ```
+
+
+```{r}
+# Middle point selection (Percentage)
+dat1 %>% 
+  select(DataSource,
+         starts_with("K6_")) %>% 
+  pivot_longer(K6_a:K6_f,
+               names_to = "K6_name",
+               values_to = "K6_value") %>% 
+  mutate(DataSource = as.factor(DataSource),
+         K6_value = as.numeric(K6_value)) %>% 
+  mutate(K6_IER = ifelse(K6_value == 3, 1, 0)) %>% 
+  group_by(DataSource, K6_name) %>% 
+  summarise(Percentage = sum(K6_IER) / n() * 100) %>% 
+  ggplot(aes(x = DataSource,
+             y = Percentage,
+             group = K6_name,
+             color = K6_name)) +
+  geom_point() +
+  geom_line() + 
+  scale_fill_brewer(palette = "Set2") +
+  theme_bw()
+```
+
+
 
 ```{r}
 # dat %>% select(starts_with("TV_TIME")) %>% filter(TV_TIME_c == 6) %>% mutate("TOTAL" = TV_TIME_a+ TV_TIME_b+TV_TIME_c+ TV_TIME_d+ TV_TIME_e+ TV_TIME_f) %>% arrange(-TOTAL)
