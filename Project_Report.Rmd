@@ -137,7 +137,7 @@ dat1 %>% select(DataSource,
   group_by(DataSource) %>% 
   summarise(count = n()) %>% 
   mutate(DataSource = as.factor(DataSource)) %>% 
-  mutate(prob_based = c("Probability based", "Probability based", "Non-Probability based", "Non-Probability based", "Non-Probability based","Non-Probability based","Non-Probability based")) %>% 
+  mutate(prob_based = c("Probability based", "Probability based", "Probability based", "Non-Probability based", "Non-Probability based","Non-Probability based","Non-Probability based")) %>% 
   ggplot(aes(x = DataSource,
              y = count,
              fill = prob_based)) + 
@@ -145,22 +145,71 @@ dat1 %>% select(DataSource,
   theme_bw() +
   labs(x = "",
        y = "Total time for sections in minutes",
-       color = "",
+       fill = "",
        title = "Distributions of time answering the survey questions for panels ")
 ```
 ```{r}
 # Percentage of item non-response
-dat %>% 
-  mutate()
+Item_non_response <- dat1 %>% 
   select(c(DataSource,
            GENDER:SUBURB,
            IMPPROB:INCOME,
            -IMPPROB_VERB,
            -GENDER_oth,
-           -SUBURB)) %>% 
+           -SUBURB,
+           -VOTE_PARTY_oth,
+           -HOMEOWNER_oth,
+           -PANELREASON_oth,
+           -HIGHEST_QUALIFICATION_oth,
+           -COB_oth,
+           -POSTCODE,
+           -VOTE,
+           -VOTE_PARTY,
+           -EDU_CHECK,
+           -HIGHEST_SCHOOLING,
+           -FURTHER_EDU,
+           -HIGHEST_QUALIFICATION,
+           -VALI_LOCATION,
+           -VALI_LOCATION_oth,
+           -VALI_OVERHEAR,
+           -VALI_FURTHER)) %>%
+  as.data.frame() %>% 
   pivot_longer(GENDER:INCOME,
                names_to = "Question",
-               values_to = "Answer")
+               values_to = "Answer") %>% 
+  mutate(Answer = as.numeric(Answer)) %>% 
+  mutate(Non_response = ifelse(Answer %in% c(-98, -99), 1, 0)) %>% 
+  select(DataSource, Non_response) %>% 
+  group_by(DataSource) %>% 
+  summarise(Percentage = sum(Non_response) / n() * 100) %>% 
+  mutate(prob_based = c("Probability based", "Probability based","Probability based", "Probability based", "Probability based",  "Non-Probability based", "Non-Probability based", "Non-Probability based","Non-Probability based"))
+
+Item_non_response %>% 
+  ggplot(aes(x = as.factor(DataSource),
+             y = Percentage,
+             fill = prob_based)) +
+  geom_col() +
+  theme_bw()
+```
+
+```{r}
+# # Item non-response for variables ends with _99
+# dat1 %>% select(DataSource,
+#                 ends_with("_98"),
+#                 ends_with("_99")) %>%
+#   pivot_longer(HEALTHCON_98:RECONTACT2_99,
+#                names_to = "Question",
+#                values_to = "Answer") %>% 
+#   na.omit() %>% 
+#   
+#   
+#   select(DataSource, Answer) %>% 
+#   group_by(DataSource) %>% 
+#   summarise(Percentage = sum(Answer) / n() * 100) %>% 
+#   ggplot(aes(x = as.factor(DataSource),
+#              y = Percentage)) +
+#   geom_col(fill = "#069AF3")
+  
 ```
 
 ```{r}
