@@ -272,6 +272,8 @@ dat1 %>%
 
 ```{r}
 # Middle point selection (Percentage)
+
+# With K6
 dat1 %>% 
   select(DataSource,
          starts_with("K6_")) %>% 
@@ -281,16 +283,44 @@ dat1 %>%
   mutate(DataSource = as.factor(DataSource),
          K6_value = as.numeric(K6_value)) %>% 
   mutate(K6_IER = ifelse(K6_value == 3, 1, 0)) %>% 
-  group_by(DataSource, K6_name) %>% 
+  group_by(DataSource) %>% 
   summarise(Percentage = sum(K6_IER) / n() * 100) %>% 
+  mutate(prob_based = c(rep("Probability based", 5), 
+                        rep("Non-Probability based", 4))) %>% 
   ggplot(aes(x = DataSource,
              y = Percentage,
-             group = K6_name,
-             color = K6_name)) +
-  geom_point() +
-  geom_line() + 
-  scale_fill_brewer(palette = "Set2") +
-  theme_bw()
+             fill = prob_based)) +
+  geom_col() +
+  scale_fill_brewer(palette = "Set1") +
+  theme_bw() +
+  labs(fill = "") +
+  geom_text(size = 3, aes(label = round(Percentage, 0)), vjust = -0.5, check_overlap = TRUE, position = position_dodge(width = 0.9))
+
+# MULTICULT, HELP, GENTRUST
+dat1 %>% 
+  select(DataSource,
+         MULTICULT,
+         HELP,
+         GENTRUST) %>% 
+  pivot_longer(MULTICULT:GENTRUST,
+               names_to = "K6_name",
+               values_to = "K6_value") %>% 
+  mutate(DataSource = as.factor(DataSource),
+         K6_value = as.numeric(K6_value)) %>% 
+  mutate(K6_IER = ifelse(K6_value == 3, 1, 0)) %>% 
+  group_by(DataSource) %>% 
+  summarise(Percentage = sum(K6_IER) / n() * 100) %>% 
+  mutate(prob_based = c(rep("Probability based", 5), 
+                        rep("Non-Probability based", 4))) %>% 
+  ggplot(aes(x = DataSource,
+             y = Percentage,
+             fill = prob_based)) +
+  geom_col() +
+  scale_fill_brewer(palette = "Set1") +
+  theme_bw() +
+  labs(fill = "") +
+  geom_text(size = 3, aes(label = round(Percentage, 0)), vjust = -0.5, check_overlap = TRUE, position = position_dodge(width = 0.9)) 
+
 ```
 
 
