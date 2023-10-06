@@ -197,32 +197,32 @@ Item_non_response %>%
 ```
 
 ```{r}
-# # Item non-response for variables ends with _99
-# dat1 %>% select(DataSource,
-#                 ends_with("_98"),
-#                 ends_with("_99")) %>%
-#   pivot_longer(HEALTHCON_98:RECONTACT2_99,
-#                names_to = "Question",
-#                values_to = "Answer") %>% 
-#   na.omit() %>% 
-#   
-#   
-#   select(DataSource, Answer) %>% 
-#   group_by(DataSource) %>% 
-#   summarise(Percentage = sum(Answer) / n() * 100) %>% 
-#   ggplot(aes(x = as.factor(DataSource),
-#              y = Percentage)) +
-#   geom_col(fill = "#069AF3")
+# Item non-response for variables HEALTHCON i.e. HEALTHCON_98 HEALTHCON_99
+dat1 %>% select(DataSource,
+                HEALTHCON_98,
+                HEALTHCON_99) %>%
+  pivot_longer(HEALTHCON_98:HEALTHCON_99,
+               names_to = "Question",
+               values_to = "Answer") %>%
+  select(DataSource, Answer) %>%
+  group_by(DataSource) %>%
+  summarise(Percentage = sum(Answer) / n() * 100) %>%
+  ggplot(aes(x = as.factor(DataSource),
+             y = Percentage)) +
+  geom_col()
+  # geom_col(fill = "#069AF3")
   
 ```
 
 ```{r}
-# Straight lining
+# Straight lining, use variables: K6, TV_TIME, INTERNET, BENTYPE
+# NOTE: 9 observations (`DataSource`: 2/6/6/6/7/7/7/8/9) select all `YES` in BENTYPE, only one obs reflects on straight-lining
 straight_lining <- dat1 %>% 
   select(DataSource,
          starts_with("K6_"),
          starts_with("TV_TIME_"),
-         starts_with("INTERNET")) %>% 
+         starts_with("INTERNET"),
+         starts_with("BENTYPE_")) %>% 
   rowwise() %>% 
   mutate(K6_IER = ifelse(length(unique(c(K6_a,
                                          K6_b,
@@ -240,9 +240,16 @@ straight_lining <- dat1 %>%
                                               INTERNET_b,
                                               INTERNET_c,
                                               INTERNET_d))) == 1, 1, 0)) %>% 
+  mutate(BENTYPE_IER = ifelse(sum((c(BENTYPE_a, # All `YES` for 5 BENTYPE => IER
+                                         BENTYPE_b,
+                                         BENTYPE_c,
+                                         BENTYPE_d,
+                                         BENTYPE_e
+                                         ))) == 5, 1, 0)) %>% 
   mutate(straight_lining = ifelse(sum(K6_IER, 
                                       TV_TIME_IER,
-                                      INTERNET_IER) >= 2, 1, 0))
+                                      INTERNET_IER,
+                                      BENTYPE_IER) >= 2, 1, 0)) 
 
 straight_lining %>% 
   select(DataSource, straight_lining) %>% 
@@ -250,7 +257,7 @@ straight_lining %>%
 ```
 
 ```{r}
-# Middle point selection (Frequency count)
+# Middle point selection (frequency count)
 dat1 %>% 
   select(DataSource,
          starts_with("K6_")) %>% 
@@ -270,6 +277,29 @@ dat1 %>%
   theme_bw()
 ```
 
+
+```{r}
+# Middle point selection (Percentage)
+dat1 %>% 
+  select(DataSource,
+         starts_with("K6_")) %>% 
+  pivot_longer(K6_a:K6_f,
+               names_to = "K6_name",
+               values_to = "K6_value") %>% 
+  mutate(DataSource = as.factor(DataSource),
+         K6_value = as.numeric(K6_value)) %>% 
+  mutate(K6_IER = ifelse(K6_value == 3, 1, 0)) %>% 
+  group_by(DataSource, K6_name) %>% 
+  summarise(Percentage = sum(K6_IER) / n() * 100) %>% 
+  ggplot(aes(x = DataSource,
+             y = Percentage,
+             group = K6_name,
+             color = K6_name)) +
+  geom_point() +
+  geom_line() + 
+  scale_fill_brewer(palette = "Set2") +
+  theme_bw()
+```
 
 ```{r}
 # Middle point selection (Percentage)
@@ -324,6 +354,68 @@ dat1 %>%
 
 ```
 
+```{r}
+# Consistency
+dat1 %>% 
+  select(DataSource,
+         starts_with("BENTYPE")) %>% 
+  rowwise() %>% 
+  mutate(K6_IER = ifelse(sum((c(BENTYPE_a,
+                                         BENTYPE_b,
+                                         BENTYPE_c,
+                                         BENTYPE_d,
+                                         BENTYPE_e
+                                         ))) == 5, 1, 0)) %>% 
+  filter(K6_IER == 1)
+
+# Consistency: BENTYPE_d (Carer Allowance) == `YES` & UNPAIDCARE == `NO` => Not read the question carefully
+BENTYPE_UNPAIDCARE <- dat1 %>% 
+  select(DataSource,
+         BENTYPE_d,
+         UNPAIDCARE) %>% 
+  rowwise() %>% 
+  mutate(BENTYPE_UNPAID_IER = ifelse((BENTYPE_d == 1) & (UNPAIDCARE == 2), 1, 0)) 
+# %>% 
+#   filter(BENTYPE_UNPAID_IER == 1)
+
+
+BENTYPE_UNPAIDCARE %>% 
+  group_by(DataSource) %>% 
+  summarise(Percentage = sum(BENTYPE_UNPAID_IER) / n() * 100) %>% 
+  mutate(prob_based = c(rep("Probability based", 5), 
+                        rep("Non-Probability based", 4))) %>% 
+  ggplot(aes(x = as.factor(DataSource),
+             y = Percentage,
+             fill = prob_based)) +
+  geom_col() +
+  scale_fill_brewer(palette = "Set1") +
+  theme_bw() +
+  labs(fill = "") +
+  geom_text(size = 3, aes(label = round(Percentage, 2)), vjust = -0.5, check_overlap = TRUE, position = position_dodge(width = 0.9))
+
+# Alternatively
+BENTYPE_UNPAIDCARE <- dat1 %>% 
+  select(DataSource,
+         BENTYPE_d,
+         UNPAIDCARE) %>% 
+  rowwise() %>% 
+  mutate(BENTYPE_UNPAID_IER = ifelse((BENTYPE_d == 1) & (UNPAIDCARE == 2), 1, 0)) 
+
+
+BENTYPE_UNPAIDCARE %>% 
+  group_by(DataSource) %>% 
+  summarise(Percentage = sum(BENTYPE_UNPAID_IER) / n() * 100) %>% 
+  mutate(prob_based = c(rep("Probability based", 5), 
+                        rep("Non-Probability based", 4))) %>% 
+  ungroup() %>% 
+  ggplot(aes(x = as.factor(prob_based),
+             y = Percentage,
+             fill = as.character(DataSource))) +
+  geom_col() +
+  scale_fill_brewer(palette = "Set3") +
+  theme_bw() +
+  labs(fill = "")
+```
 
 
 ```{r}
