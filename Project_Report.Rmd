@@ -145,9 +145,10 @@ dat1 %>% select(DataSource,
   geom_col() + 
   theme_bw() +
   labs(x = "",
-       y = "Total time for sections in minutes",
+       y = "Number of observations",
        fill = "",
-       title = "Distributions of time answering the survey questions for panels ")
+       title = "Distribution of observations under 2 seconds per question") +
+  geom_text(size = 3, aes(label = round(count, 0)), vjust = -0.5, check_overlap = TRUE, position = position_dodge(width = 0.9))
 ```
 
 ```{r}
