@@ -67,7 +67,22 @@ dat1 <- dat %>%
   mutate(prob_based = ifelse(DataSource <= 5, "Probablity based", "Non-probablity based"))
 
 ```
-
+```{r}
+set.seed(1234)
+dat1[sample(nrow(dat1), 30), ] %>% head() %>% 
+  as.data.frame() %>% 
+  select(DataSource) %>% 
+  mutate(DataSource = case_when(
+            DataSource == 1 ~ 11,
+           DataSource == 2~22,
+          DataSource ==  3~33,
+          DataSource ==  4~44,
+          DataSource ==  5~55,
+          DataSource ==  6~66,
+          DataSource ==  7~77,
+         DataSource ==   8~88,
+         DataSource ==   9~99))
+```
 
 ```{r}
 # distribution of page time for section 2, 4-9
