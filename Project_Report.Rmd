@@ -65,7 +65,9 @@ dat <- haven::read_sav("../Data and survey materials/ACSSM Final Data_27-Feb-202
 # Add column to indicate probability based and non-probability based
 dat1 <- dat %>% 
   mutate(prob_based = ifelse(DataSource <= 5, "Probablity based", "Non-probablity based"))
+
 ```
+
 
 ```{r}
 # distribution of page time for section 2, 4-9
@@ -253,7 +255,7 @@ straight_lining <- dat1 %>%
 
 straight_lining %>% 
   select(DataSource, straight_lining) %>% 
-  table()
+  table() # PErcentage
 ```
 
 ```{r}
@@ -415,6 +417,37 @@ BENTYPE_UNPAIDCARE %>%
   scale_fill_brewer(palette = "Set3") +
   theme_bw() +
   labs(fill = "")
+
+# Correlation AGE AND FIRST DRINK
+dat1 %>% 
+  select(DataSource,
+         AGE,
+         FIRSTDRINK) %>% 
+  filter(AGE >= 0,
+         FIRSTDRINK >= 0) %>% 
+  ggplot(aes(x = AGE,
+             y= FIRSTDRINK)) + 
+  geom_point() +
+  geom_point(data = dat1 %>% select(DataSource,
+                                   AGE,
+                                   FIRSTDRINK) %>%
+              filter(AGE >= 0,
+                     FIRSTDRINK >= 0,
+                     FIRSTDRINK > AGE), color = "red", size = 5) +
+  geom_abline(slope = 1, color = "red") + 
+  theme_bw() +
+  geom_text(data = dat1 %>% select(DataSource,
+                                   AGE,
+                                   FIRSTDRINK) %>%
+              filter(AGE >= 0,
+                     FIRSTDRINK >= 0,
+                     FIRSTDRINK > AGE), 
+            size = 10,
+            color = "red",
+            aes(label = DataSource),
+            vjust = -0.5,
+            check_overlap = TRUE,
+            position = position_dodge(width = 0.9))
 ```
 
 
