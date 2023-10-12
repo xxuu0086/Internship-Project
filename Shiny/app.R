@@ -41,7 +41,10 @@ ui <- fluidPage(
                                       "3 mins" = 3), 
                        selected = 3000),
           numericInput("num", label = h6("Cutoff Time, second per question"), value = 2),
-          actionButton("button", label = "Click to show boxplot")
+          radioButtons("radio", label = h6(""),
+                       choices = list("Violin plot" = "v",
+                                      "Box plot" = "b"), 
+                       selected = "v")
         ),
 
         # Show a plot of the generated distribution
@@ -56,6 +59,10 @@ server <- function(input, output) {
 
     output$distPlot <- renderPlot({
       
+      switch1 <- switch (input$radio,
+                         "v" = geom_violin(),
+                         "b" = geom_boxplot()
+      )
       
       # distribution of page time for section 2, 4-9
       dat1 %>%
@@ -64,7 +71,7 @@ server <- function(input, output) {
                    y = Section_SUM_main,
                    color = prob_based)) +
         geom_point(size = 3) +
-        geom_violin() +
+        switch1 +
         geom_hline(yintercept = input$num * 70 / 60, color = "purple", size = 1) +
         geom_text(aes(2,70 * input$num / 60, label = paste0("`Cutoff` Time:", round(input$num * 70 / 60, 2), "mins"), vjust = 2), show.legend = FALSE, color = "purple") +
         scale_color_brewer(palette = "Set1") +
@@ -72,7 +79,7 @@ server <- function(input, output) {
         labs(x = "",
              y = "Total time for sections in minutes",
              color = "",
-             title = "Distributions of time answering the survey questions for panels ")
+             title = "Distributions of time answering the survey questions for panels ") 
       
     })
 }
