@@ -105,6 +105,8 @@ dat1 <- dat1 %>%
                                   "Panel 4"))) # Use str() to check levels
 ```
 
+# Distribution of page time
+
 ```{r}
 # distribution of page time for section 2, 4-9
 dat1 %>% 
@@ -177,9 +179,7 @@ dat1 %>%
 
 ```
 
-
-
-
+# Page time frequency
 
 ```{r}
 # page time
@@ -212,6 +212,7 @@ dat1 %>% select(DataSource_name,
   geom_text(size = 3, aes(label = round(count, 0)), vjust = -0.5, check_overlap = TRUE, position = position_dodge(width = 0.9)) +
   theme(axis.text.x = element_text(angle=15, hjust=1))
 ```
+# Item non-response
 
 ```{r}
 # Percentage of item non-response
@@ -263,23 +264,34 @@ Item_non_response %>%
 
 ```
 
+# Item non-response for health condition
+
 ```{r}
 # Item non-response for variables HEALTHCON i.e. HEALTHCON_98 HEALTHCON_99
-dat1 %>% select(DataSource,
+dat1 %>% select(DataSource_name,
+                prob_based,
                 HEALTHCON_98,
                 HEALTHCON_99) %>%
   pivot_longer(HEALTHCON_98:HEALTHCON_99,
                names_to = "Question",
                values_to = "Answer") %>%
-  select(DataSource, Answer) %>%
-  group_by(DataSource) %>%
+  select(DataSource_name, prob_based, Answer) %>%
+  group_by(prob_based, DataSource_name) %>%
   summarise(Percentage = sum(Answer) / n() * 100) %>%
-  ggplot(aes(x = as.factor(DataSource),
-             y = Percentage)) +
-  geom_col()
+  ggplot(aes(x = DataSource_name,
+             y = Percentage,
+             fill = prob_based)) +
+  geom_col() +
+  theme_bw() +
+  labs(fill = "",
+       x = "Panels") +
+  theme(axis.text.x = element_text(angle=15, hjust=1)) +
+  geom_text(size = 3, aes(label = round(Percentage, 2)), vjust = -0.5, check_overlap = TRUE, position = position_dodge(width = 0.9))
   # geom_col(fill = "#069AF3")
   
 ```
+
+# Straight lining, use variables: K6, TV_TIME, INTERNET, BENTYPE
 
 ```{r}
 # Straight lining, use variables: K6, TV_TIME, INTERNET, BENTYPE
