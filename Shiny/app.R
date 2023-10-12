@@ -10,9 +10,7 @@ library(haven)
 
 dat <- haven::read_sav("../../Data and survey materials/ACSSM Final Data_27-Feb-2023 weighted.sav")
 
-dat1 <- dat %>% 
-  mutate(prob_based = ifelse(DataSource <= 5, "Probablity based", "Non-probablity based")) %>% # Indicate probability based
-  filter(DataSource %in% c(2, 5, 6, 7, 8, 9)) %>%  # Filter data source
+dat1 <- dat1 %>% 
   mutate(DataSource_name = case_when(
     DataSource == 1 ~ "VALI",
     DataSource == 2 ~ "Life in Australia",
@@ -22,7 +20,26 @@ dat1 <- dat %>%
     DataSource == 6 ~ "Panel 1",
     DataSource == 7 ~ "Panel 2",
     DataSource == 8 ~ "Panel 3",
-    DataSource == 9 ~ "Panel 4"))
+    DataSource == 9 ~ "Panel 4")) %>% 
+  mutate(DataSource_name = factor(DataSource_name,
+                                  levels = c("VALI", 
+                                             "Life in Australia",
+                                             "CATI high effort",
+                                             "CATI low effort",
+                                             "SMS push to web",
+                                             "Panel 1",
+                                             "Panel 2",
+                                             "Panel 3",
+                                             "Panel 4"),
+                                  labels = c("VALI", 
+                                             "Life in Australia",
+                                             "CATI high effort",
+                                             "CATI low effort",
+                                             "SMS push to web",
+                                             "Panel 1",
+                                             "Panel 2",
+                                             "Panel 3",
+                                             "Panel 4")))
 
 
 ui <- fluidPage(
@@ -67,7 +84,7 @@ server <- function(input, output) {
       # distribution of page time for section 2, 4-9
       dat1 %>%
         filter(Section_SUM_main < as.numeric(input$bins)) %>%
-        ggplot(aes(x = as.factor(DataSource),
+        ggplot(aes(x = DataSource_name,
                    y = Section_SUM_main,
                    color = prob_based)) +
         geom_point(size = 3) +
