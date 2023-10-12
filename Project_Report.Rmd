@@ -113,7 +113,7 @@ dat1 %>%
                    y = Section_SUM_main,
                    color = prob_based)) +
   geom_point() + 
-  geom_violin() + 
+  geom_boxplot() + 
   geom_hline(yintercept = 70 * 2 / 60, color = "purple", size = 1) +
   geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2), show.legend = FALSE, color = "purple") +
   scale_color_brewer(palette = "Set1") +
@@ -130,7 +130,7 @@ dat1 %>%
                    y = Section_SUM_main,
                    color = prob_based)) +
   geom_point() + 
-  geom_violin() + 
+  geom_boxplot() + 
   geom_hline(yintercept = 70 * 2 / 60, color = "purple", size = 1) +
   geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2), show.legend = FALSE, color = "purple") +
   scale_color_brewer(palette = "Set1") +
@@ -147,7 +147,7 @@ dat1 %>%
                    y = Section_SUM_main,
                    color = prob_based)) +
   geom_point() + 
-  geom_violin() + 
+  geom_boxplot() + 
   geom_hline(yintercept = 70 * 2 / 60, color = "purple", size = 1) +
   geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2), show.legend = FALSE, color = "purple") +
   scale_color_brewer(palette = "Set1") +
@@ -164,7 +164,7 @@ dat1 %>%
                    y = Section_SUM_main,
                    color = prob_based)) +
   geom_point() + 
-  geom_violin() + 
+  geom_boxplot() + 
   geom_hline(yintercept = 70 * 2 / 60, color = "purple", size = 1) +
   geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2), show.legend = FALSE, color = "purple") +
   scale_color_brewer(palette = "Set1") +
@@ -209,13 +209,15 @@ dat1 %>% select(DataSource_name,
        y = "Number of observations",
        fill = "",
        title = "Distribution of observations under 2 seconds per question") +
-  geom_text(size = 3, aes(label = round(count, 0)), vjust = -0.5, check_overlap = TRUE, position = position_dodge(width = 0.9))
+  geom_text(size = 3, aes(label = round(count, 0)), vjust = -0.5, check_overlap = TRUE, position = position_dodge(width = 0.9)) +
+  theme(axis.text.x = element_text(angle=15, hjust=1))
 ```
 
 ```{r}
 # Percentage of item non-response
 Item_non_response <- dat1 %>% 
-  select(c(DataSource,
+  select(c(DataSource_name,
+           prob_based,
            GENDER:SUBURB,
            IMPPROB:INCOME,
            -IMPPROB_VERB,
@@ -243,18 +245,22 @@ Item_non_response <- dat1 %>%
                values_to = "Answer") %>% 
   mutate(Answer = as.numeric(Answer)) %>% 
   mutate(Non_response = ifelse(Answer %in% c(-98, -99), 1, 0)) %>% 
-  select(DataSource, Non_response) %>% 
-  group_by(DataSource) %>% 
-  summarise(Percentage = sum(Non_response) / n() * 100) %>% 
-  mutate(prob_based = c(rep("Probability based", 5), 
-                        rep("Non-Probability based", 4)))
+  select(DataSource_name, prob_based, Non_response) %>% 
+  group_by(prob_based, DataSource_name) %>% 
+  summarise(Percentage = sum(Non_response) / n() * 100) 
 
 Item_non_response %>% 
-  ggplot(aes(x = as.factor(DataSource),
+  ggplot(aes(x = DataSource_name,
              y = Percentage,
              fill = prob_based)) +
   geom_col() +
-  theme_bw()
+  theme_bw() +
+  labs(fill = "",
+       x = "Panels") +
+  theme(axis.text.x = element_text(angle=15, hjust=1)) +
+  geom_text(size = 3, aes(label = round(Percentage, 2)), vjust = -0.5, check_overlap = TRUE, position = position_dodge(width = 0.9)) 
+
+
 ```
 
 ```{r}
