@@ -76,12 +76,13 @@ server <- function(input, output) {
         geom_text(aes(2,70 * input$num / 60, label = paste0("`Cutoff` Time:", round(input$num * 70 / 60, 2), "mins"), vjust = 2), show.legend = FALSE, color = "purple") +
         scale_color_brewer(palette = "Set1") +
         theme_bw() +
+        theme(legend.position = "bottom") +
         labs(x = "",
              y = "Total time for sections in minutes",
              color = "",
              title = "Distributions of time answering the survey questions for panels ") 
       
-    })
+    }, height = 800)
 }
 
 # Run the application 
