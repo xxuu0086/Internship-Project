@@ -2,13 +2,13 @@
 # Load relevant libraries
 library(shiny)
 library(tidyverse)
-
-
-# Load packages and data
-library(tidyverse)
 library(haven)
 
 dat <- haven::read_sav("../../Data and survey materials/ACSSM Final Data_27-Feb-2023 weighted.sav")
+
+dat1 <- dat %>% 
+  mutate(prob_based = ifelse(DataSource <= 5, "Probablity based", "Non-probablity based")) %>% # Indicate probability based
+  filter(DataSource %in% c(2, 5, 6, 7, 8, 9)) # Filter data source
 
 dat1 <- dat1 %>% 
   mutate(DataSource_name = case_when(
