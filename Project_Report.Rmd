@@ -28,6 +28,7 @@ output:
     toc: FALSE
     number_sections: TRUE
   html_document: default
+   
 
 
 ---
@@ -57,6 +58,7 @@ knitr::opts_chunk$set(
 # Load packages and data
 library(tidyverse)
 library(haven)
+library(shiny)
 
 dat <- haven::read_sav("../Data and survey materials/ACSSM Final Data_27-Feb-2023 weighted.sav")
 ```
@@ -81,7 +83,26 @@ dat1 <- dat1 %>%
     DataSource == 6 ~ "Panel 1",
     DataSource == 7 ~ "Panel 2",
     DataSource == 8 ~ "Panel 3",
-    DataSource == 9 ~ "Panel 4"))
+    DataSource == 9 ~ "Panel 4")) %>% 
+  mutate(DataSource_name = factor(DataSource_name,
+                       levels = c("VALI", 
+                                  "Life in Australia",
+                                  "CATI high effort",
+                                  "CATI low effort",
+                                  "SMS push to web",
+                                  "Panel 1",
+                                  "Panel 2",
+                                  "Panel 3",
+                                  "Panel 4"),
+                       labels = c("VALI", 
+                                  "Life in Australia",
+                                  "CATI high effort",
+                                  "CATI low effort",
+                                  "SMS push to web",
+                                  "Panel 1",
+                                  "Panel 2",
+                                  "Panel 3",
+                                  "Panel 4"))) # Use str() to check levels
 ```
 
 ```{r}
@@ -137,6 +158,9 @@ dat1 %>%
 ```
 
 
+
+
+
 ```{r}
 # page time
 dat1 %>% select(DataSource,
@@ -151,11 +175,11 @@ dat1 %>% select(DataSource,
                        Section_Length_9), na.rm = TRUE) *60 /64) %>% 
   filter(ave > 0,
          ave < 2) %>% 
-  group_by(DataSource) %>% 
+  group_by(prob_based, DataSource) %>% 
   summarise(count = n()) %>% 
   mutate(DataSource = as.factor(DataSource)) %>% 
-  mutate(prob_based = c(rep("Probability based", 3),
-                        rep("Non-Probability based",4))) %>% 
+  # mutate(prob_based = c(rep("Probability based", 3),
+  #                       rep("Non-Probability based",4))) %>% 
   ggplot(aes(x = DataSource,
              y = count,
              fill = prob_based)) + 
