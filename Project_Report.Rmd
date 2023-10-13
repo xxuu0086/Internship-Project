@@ -59,6 +59,8 @@ knitr::opts_chunk$set(
 library(tidyverse)
 library(haven)
 library(shiny)
+library(kableExtra)
+library(gridExtra)
 
 dat <- haven::read_sav("../Data and survey materials/ACSSM Final Data_27-Feb-2023 weighted.sav")
 ```
@@ -75,29 +77,20 @@ dat1 <- dat %>%
 # Mutate new column with DataSource name
 dat1 <- dat1 %>% 
   mutate(DataSource_name = case_when(
-    DataSource == 1 ~ "VALI",
     DataSource == 2 ~ "Life in Australia",
-    DataSource == 3 ~ "CATI high effort",
-    DataSource == 4 ~ "CATI low effort",
     DataSource == 5 ~ "SMS push to web",
     DataSource == 6 ~ "Panel 1",
     DataSource == 7 ~ "Panel 2",
     DataSource == 8 ~ "Panel 3",
     DataSource == 9 ~ "Panel 4")) %>% 
   mutate(DataSource_name = factor(DataSource_name,
-                       levels = c("VALI", 
-                                  "Life in Australia",
-                                  "CATI high effort",
-                                  "CATI low effort",
+                       levels = c("Life in Australia",
                                   "SMS push to web",
                                   "Panel 1",
                                   "Panel 2",
                                   "Panel 3",
                                   "Panel 4"),
-                       labels = c("VALI", 
-                                  "Life in Australia",
-                                  "CATI high effort",
-                                  "CATI low effort",
+                       labels = c("Life in Australia",
                                   "SMS push to web",
                                   "Panel 1",
                                   "Panel 2",
@@ -297,7 +290,7 @@ dat1 %>% select(DataSource_name,
 # Straight lining, use variables: K6, TV_TIME, INTERNET, BENTYPE
 # NOTE: 9 observations (`DataSource`: 2/6/6/6/7/7/7/8/9) select all `YES` in BENTYPE, only one obs reflects on straight-lining
 straight_lining <- dat1 %>% 
-  select(DataSource,
+  select(DataSource_name,
          starts_with("K6_"),
          starts_with("TV_TIME_"),
          starts_with("INTERNET"),
@@ -331,24 +324,34 @@ straight_lining <- dat1 %>%
                                       BENTYPE_IER) >= 2, 1, 0)) 
 
 straight_lining %>% 
-  select(DataSource, straight_lining) %>% 
-  table() # PErcentage
+  select(DataSource_name, straight_lining) %>% 
+  table() %>% 
+  kable(caption = "1 = Straight lining") %>% 
+  kable_classic()
 ```
 
+# mid-point selection: 
+
+Ordinal answers, odd # of answer option
+
+__K6 questions__
+
+- All the time to none of the time 
+
 ```{r}
-# Middle point selection (frequency count)
+# mid-point selection (frequency count)
 dat1 %>% 
-  select(DataSource,
+  select(DataSource_name,
+         prob_based,
          starts_with("K6_")) %>% 
   pivot_longer(K6_a:K6_f,
                names_to = "K6_name",
                values_to = "K6_value") %>% 
-  mutate(DataSource = as.factor(DataSource),
-         K6_value = as.numeric(K6_value)) %>% 
+  mutate(K6_value = as.numeric(K6_value)) %>% 
   filter(K6_value == 3) %>% 
-  group_by(DataSource, K6_name) %>% 
+  group_by(prob_based, DataSource_name, K6_name) %>% 
   summarise(count = n()) %>% 
-  ggplot(aes(x = DataSource,
+  ggplot(aes(x = DataSource_name,
              y = count,
              fill = K6_name)) +
   geom_col(position = "stack") + 
@@ -356,73 +359,74 @@ dat1 %>%
   theme_bw()
 ```
 
+# mid-point selection (%)
 
 ```{r}
-# Middle point selection (Percentage)
-dat1 %>% 
-  select(DataSource,
+# mid-point selection (Percentage)
+mps1 <- dat1 %>% 
+  select(DataSource_name,
+         prob_based,
          starts_with("K6_")) %>% 
   pivot_longer(K6_a:K6_f,
                names_to = "K6_name",
                values_to = "K6_value") %>% 
-  mutate(DataSource = as.factor(DataSource),
-         K6_value = as.numeric(K6_value)) %>% 
+  mutate(K6_value = as.numeric(K6_value)) %>% 
   mutate(K6_IER = ifelse(K6_value == 3, 1, 0)) %>% 
-  group_by(DataSource, K6_name) %>% 
+  group_by(prob_based, DataSource_name, K6_name) %>% 
   summarise(Percentage = sum(K6_IER) / n() * 100) %>% 
-  ggplot(aes(x = DataSource,
+  ggplot(aes(x = DataSource_name,
              y = Percentage,
              group = K6_name,
              color = K6_name)) +
   geom_point() +
   geom_line() + 
   scale_fill_brewer(palette = "Set2") +
-  theme_bw()
-```
-
-```{r}
-# Middle point selection (Percentage)
+  theme_bw() +
+  theme(legend.position = "bottom")
 
 # With K6
-dat1 %>% 
-  select(DataSource,
+mps2 <- dat1 %>% 
+  select(DataSource_name,
+         prob_based,
          starts_with("K6_")) %>% 
   pivot_longer(K6_a:K6_f,
                names_to = "K6_name",
                values_to = "K6_value") %>% 
-  mutate(DataSource = as.factor(DataSource),
-         K6_value = as.numeric(K6_value)) %>% 
+  mutate(K6_value = as.numeric(K6_value)) %>% 
   mutate(K6_IER = ifelse(K6_value == 3, 1, 0)) %>% 
-  group_by(DataSource) %>% 
+  group_by(prob_based, DataSource_name) %>% 
   summarise(Percentage = sum(K6_IER) / n() * 100) %>% 
-  mutate(prob_based = c(rep("Probability based", 5), 
-                        rep("Non-Probability based", 4))) %>% 
-  ggplot(aes(x = DataSource,
+  ggplot(aes(x = DataSource_name,
              y = Percentage,
              fill = prob_based)) +
   geom_col() +
   scale_fill_brewer(palette = "Set1") +
   theme_bw() +
   labs(fill = "") +
-  geom_text(size = 3, aes(label = round(Percentage, 0)), vjust = -0.5, check_overlap = TRUE, position = position_dodge(width = 0.9))
+  geom_text(size = 3, aes(label = round(Percentage, 0)), vjust = -0.5, check_overlap = TRUE, position = position_dodge(width = 0.9)) +
+  theme(legend.position = "bottom")
 
+grid.arrange(mps1, mps2, nrow = 1)
+```
+
+# mid-point selection for: `MULTICULT`, `HELP`, `GENTRUST`
+
+```{r}
 # MULTICULT, HELP, GENTRUST
 dat1 %>% 
-  select(DataSource,
+  select(DataSource_name,
+         prob_based,
          MULTICULT,
          HELP,
          GENTRUST) %>% 
   pivot_longer(MULTICULT:GENTRUST,
                names_to = "K6_name",
                values_to = "K6_value") %>% 
-  mutate(DataSource = as.factor(DataSource),
-         K6_value = as.numeric(K6_value)) %>% 
+  mutate(K6_value = as.numeric(K6_value)) %>% 
   mutate(K6_IER = ifelse(K6_value == 3, 1, 0)) %>% 
-  group_by(DataSource) %>% 
+  group_by(prob_based, DataSource_name) %>% 
   summarise(Percentage = sum(K6_IER) / n() * 100) %>% 
-  mutate(prob_based = c(rep("Probability based", 5), 
-                        rep("Non-Probability based", 4))) %>% 
-  ggplot(aes(x = DataSource,
+  ggplot(aes(x = DataSource_name,
              y = Percentage,
              fill = prob_based)) +
   geom_col() +
@@ -433,10 +437,13 @@ dat1 %>%
 
 ```
 
+# Consistency
+
 ```{r}
 # Consistency
 dat1 %>% 
-  select(DataSource,
+  select(DataSource_name,
+         prob_based,
          starts_with("BENTYPE")) %>% 
   rowwise() %>% 
   mutate(K6_IER = ifelse(sum((c(BENTYPE_a,
@@ -445,11 +452,14 @@ dat1 %>%
                                          BENTYPE_d,
                                          BENTYPE_e
                                          ))) == 5, 1, 0)) %>% 
-  filter(K6_IER == 1)
+  filter(K6_IER == 1) %>% 
+  kable(caption = "`YES` for all benefits") %>% 
+  kable_classic_2()
 
 # Consistency: BENTYPE_d (Carer Allowance) == `YES` & UNPAIDCARE == `NO` => Not read the question carefully
 BENTYPE_UNPAIDCARE <- dat1 %>% 
-  select(DataSource,
+  select(DataSource_name,
+         prob_based,
          BENTYPE_d,
          UNPAIDCARE) %>% 
   rowwise() %>% 
@@ -459,11 +469,9 @@ BENTYPE_UNPAIDCARE <- dat1 %>%
 
 
 BENTYPE_UNPAIDCARE %>% 
-  group_by(DataSource) %>% 
+  group_by(prob_based, DataSource_name) %>% 
   summarise(Percentage = sum(BENTYPE_UNPAID_IER) / n() * 100) %>% 
-  mutate(prob_based = c(rep("Probability based", 5), 
-                        rep("Non-Probability based", 4))) %>% 
-  ggplot(aes(x = as.factor(DataSource),
+  ggplot(aes(x = DataSource_name,
              y = Percentage,
              fill = prob_based)) +
   geom_col() +
@@ -472,32 +480,10 @@ BENTYPE_UNPAIDCARE %>%
   labs(fill = "") +
   geom_text(size = 3, aes(label = round(Percentage, 2)), vjust = -0.5, check_overlap = TRUE, position = position_dodge(width = 0.9))
 
-# Alternatively
-BENTYPE_UNPAIDCARE <- dat1 %>% 
-  select(DataSource,
-         BENTYPE_d,
-         UNPAIDCARE) %>% 
-  rowwise() %>% 
-  mutate(BENTYPE_UNPAID_IER = ifelse((BENTYPE_d == 1) & (UNPAIDCARE == 2), 1, 0)) 
-
-
-BENTYPE_UNPAIDCARE %>% 
-  group_by(DataSource) %>% 
-  summarise(Percentage = sum(BENTYPE_UNPAID_IER) / n() * 100) %>% 
-  mutate(prob_based = c(rep("Probability based", 5), 
-                        rep("Non-Probability based", 4))) %>% 
-  ungroup() %>% 
-  ggplot(aes(x = as.factor(prob_based),
-             y = Percentage,
-             fill = as.character(DataSource))) +
-  geom_col() +
-  scale_fill_brewer(palette = "Set3") +
-  theme_bw() +
-  labs(fill = "")
-
 # Correlation AGE AND FIRST DRINK
 dat1 %>% 
-  select(DataSource,
+  select(DataSource_name,
+         prob_based,
          AGE,
          FIRSTDRINK) %>% 
   filter(AGE >= 0,
@@ -505,7 +491,7 @@ dat1 %>%
   ggplot(aes(x = AGE,
              y= FIRSTDRINK)) + 
   geom_point() +
-  geom_point(data = dat1 %>% select(DataSource,
+  geom_point(data = dat1 %>% select(DataSource_name,
                                    AGE,
                                    FIRSTDRINK) %>%
               filter(AGE >= 0,
@@ -513,16 +499,18 @@ dat1 %>%
                      FIRSTDRINK > AGE), color = "red", size = 5) +
   geom_abline(slope = 1, color = "red") + 
   theme_bw() +
-  geom_text(data = dat1 %>% select(DataSource,
+  geom_text(data = dat1 %>% select(DataSource_name,
+                                   prob_based,
                                    AGE,
                                    FIRSTDRINK) %>%
               filter(AGE >= 0,
                      FIRSTDRINK >= 0,
                      FIRSTDRINK > AGE), 
-            size = 10,
+            size = 5,
             color = "red",
-            aes(label = DataSource),
+            aes(label = paste0(DataSource_name, "\n", "(", prob_based, ")")),
             vjust = -0.5,
+            hjust = 0,
             check_overlap = TRUE,
             position = position_dodge(width = 0.9))
 ```
