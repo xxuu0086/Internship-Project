@@ -61,6 +61,7 @@ library(haven)
 library(shiny)
 library(kableExtra)
 library(gridExtra)
+library(naniar)
 
 dat <- haven::read_sav("../Data and survey materials/ACSSM Final Data_27-Feb-2023 weighted.sav")
 ```
@@ -321,13 +322,14 @@ straight_lining <- dat1 %>%
   mutate(straight_lining = ifelse(sum(K6_IER, 
                                       TV_TIME_IER,
                                       INTERNET_IER,
-                                      BENTYPE_IER) >= 2, 1, 0)) 
+                                      BENTYPE_IER) >= 3, 1, 0)) 
 
 straight_lining %>% 
   select(DataSource_name, straight_lining) %>% 
   table() %>% 
   kable(caption = "1 = Straight lining") %>% 
-  kable_classic()
+  kable_classic() %>%
+  kableExtra::kable_styling(latex_options = "hold_position")
 ```
 
 # mid-point selection: 
@@ -454,7 +456,8 @@ dat1 %>%
                                          ))) == 5, 1, 0)) %>% 
   filter(K6_IER == 1) %>% 
   kable(caption = "`YES` for all benefits") %>% 
-  kable_classic_2()
+  kable_classic_2() %>%
+  kableExtra::kable_styling(latex_options = "hold_position")
 
 # Consistency: BENTYPE_d (Carer Allowance) == `YES` & UNPAIDCARE == `NO` => Not read the question carefully
 BENTYPE_UNPAIDCARE <- dat1 %>% 
@@ -513,6 +516,66 @@ dat1 %>%
             hjust = 0,
             check_overlap = TRUE,
             position = position_dodge(width = 0.9))
+```
+# Extreme values
+
+
+
+```{r}
+dat1 %>%
+  select(DataSource_name,
+         starts_with("TV_TIME")) %>% 
+  pivot_longer(TV_TIME_a:TV_TIME_f,
+               names_to = "TV_TIME",
+               values_to = "HOUR") %>% 
+  mutate(HOUR = ifelse(HOUR < 0, 0, HOUR)) %>% 
+  pivot_wider(names_from = TV_TIME,
+              values_from = HOUR) %>% 
+  unnest() %>% 
+  mutate("TOTAL" = round((TV_TIME_a+ TV_TIME_b+TV_TIME_c+ TV_TIME_d+ TV_TIME_e+ TV_TIME_f) / 6 * 20), 0) %>% 
+  ggplot(aes(x = TOTAL)) +
+  geom_histogram()+
+  geom_density() +
+  theme_bw() +
+  labs(title = "Minimum time spent on social media each week (in hours).",
+       y = "Number of respondents",
+       x = "Hour")
+
+dat1 %>%
+  select(DataSource_name,
+         AGE,
+         prob_based,
+         starts_with("TV_TIME")) %>% 
+  pivot_longer(TV_TIME_a:TV_TIME_f,
+               names_to = "TV_TIME",
+               values_to = "HOUR") %>% 
+  mutate(HOUR = ifelse(HOUR < 0, 0, HOUR)) %>% 
+  pivot_wider(names_from = TV_TIME,
+              values_from = HOUR) %>% 
+  unnest() %>% 
+  mutate("TOTAL" = round((TV_TIME_a+ TV_TIME_b+TV_TIME_c+ TV_TIME_d+ TV_TIME_e+ TV_TIME_f) / 6 * 20), 0) %>% 
+  filter(TOTAL > 112.5) %>% 
+  ggplot(aes(x = TOTAL)) +
+  geom_histogram()+
+  theme_bw() +
+  labs(title = "Minimum time spent on social media each week (in hours).",
+       y = "Number of respondents",
+       x = "Hour")
+
+dat1 %>% # See ages of those spend at 120 hours on TV_TIME
+  select(DataSource_name,
+         AGE,
+         prob_based,
+         starts_with("TV_TIME")) %>% 
+  pivot_longer(TV_TIME_a:TV_TIME_f,
+               names_to = "TV_TIME",
+               values_to = "HOUR") %>% 
+  mutate(HOUR = ifelse(HOUR < 0, 0, HOUR)) %>% 
+  pivot_wider(names_from = TV_TIME,
+              values_from = HOUR) %>% 
+  unnest() %>% 
+  mutate("TOTAL" = round((TV_TIME_a+ TV_TIME_b+TV_TIME_c+ TV_TIME_d+ TV_TIME_e+ TV_TIME_f) / 6 * 20), 0) %>% 
+  filter(TOTAL > 112.5)
 ```
 
 
