@@ -1,0 +1,38 @@
+/*
+.quarto-title-meta {
+  background-color: #e3e3e3;
+  padding: 8px;
+  border-radius: 2px;
+}
+*/
+
+/* css styles */
+.navbar-dark {
+  background-color: #58a6f5;
+}
+
+.quarto-title-banner {
+  background-color: #a2d8f2;
+}
+
+.title {
+  text-align: center;
+  background-color: #cce8fc;
+}
+
+* {
+  background-color: #dceefc;
+}
+
+.gdbar img {
+  width: 200px !important;
+  height: 90px !important;
+  margin: 8px 8px;
+}
+
+slides > slide:not(.nobackground):before {
+  width: 0px;
+  height: 0px;
+  background-size: 0px 0px;
+}
+

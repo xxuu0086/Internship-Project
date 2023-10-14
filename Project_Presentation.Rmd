@@ -1,10 +1,8 @@
 ---
-title: "Business Analytics Creative Activity"
-subtitle: "ETC5543 Presentation"
-
+title: "ACSSM Data Quality Project"
+subtitle: ETC5543 Business Analytics Creative Activity Presentation
 author:
   - [Xianghe Xu]
-  
 date: "`r Sys.Date()`"
 output:
   ioslides_presentation:
@@ -41,16 +39,33 @@ library(plotly)
 library(lubridate)
 library(chron)
 library(kableExtra)
-
+marathon <- read.csv("https://gist.githubusercontent.com/MikeLydeamore/6045b001ff01604841693192b337dd0b/raw/60d60e36923efa24dbff567a6b934f08a00ba77d/full_marathon_2008_2021.csv")
 ```
 
 ## Introduction \| Marathon {data-background="Image/image.png" data-background-size="120px" data-background-position="bottom" data-background-repeat="repeat-x"}
 
+>-   Long distance race, 42.20km
+
+>-  It is a road race & trial routes
+
+>-   Each year, 800+ marathon events & Ten of thousands participants
+
+>-   Name from Legend of Philippides
+
+>-   Become one of Olympic events in 1896 
+
+>-  length of marathon standardized in 1921
 
 ## Aim and motivation 
 
 To :
 
+-   Explore the completed full marathon data.
+
+-   Perform an exploratory data analysis and focus on temporal changes.
+
+-   E.g. How are the completion times for marathons changing between
+    2008 and 2021?
 
 ## Data description\|
 
