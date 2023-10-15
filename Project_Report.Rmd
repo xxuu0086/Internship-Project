@@ -27,6 +27,7 @@ output:
   bookdown::pdf_document2:
     toc: FALSE
     number_sections: TRUE
+    keep_md: yes
   html_document: default
    
 
@@ -51,7 +52,8 @@ knitr::opts_chunk$set(
   fig.height = 7,
   fig.retina = 3,
   fig.pos = "H", 
-  out.extra = "")
+  out.extra = "",
+  dev = "png")
 ```
 
 ```{r}
@@ -110,15 +112,15 @@ dat1 %>%
                    color = prob_based)) +
   geom_point() + 
   geom_boxplot() + 
-  geom_hline(yintercept = 70 * 2 / 60, color = "purple", size = 1) +
-  geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2), show.legend = FALSE, color = "purple") +
+  # geom_hline(yintercept = 70 * 2 / 60, color = "purple", size = 1) +
+  # geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2), show.legend = FALSE, color = "purple") +
   scale_color_brewer(palette = "Set1") +
   theme_bw() +
   theme(axis.text.x = element_text(angle=15, hjust=1)) +
   labs(x = "",
-       y = "Total time for sections in minutes",
+       y = "Total time in minutes",
        color = "",
-       title = "Distributions of time answering the survey questions for panels ")
+       title = "Distributions of time spent answering the survey questions for panels.")
 
 dat1 %>% 
   filter(Section_SUM_main < 120) %>% 
@@ -127,15 +129,15 @@ dat1 %>%
                    color = prob_based)) +
   geom_point() + 
   geom_boxplot() + 
-  geom_hline(yintercept = 70 * 2 / 60, color = "purple", size = 1) +
-  geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2), show.legend = FALSE, color = "purple") +
+  # geom_hline(yintercept = 70 * 2 / 60, color = "purple", size = 1) +
+  # geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2), show.legend = FALSE, color = "purple") +
   scale_color_brewer(palette = "Set1") +
   theme_bw() +
   theme(axis.text.x = element_text(angle=15, hjust=1)) +
   labs(x = "",
-       y = "Total time for sections in minutes",
+       y = "Total time in minutes",
        color = "",
-       title = "Distributions of time answering the survey questions for panels ")
+       title = "Distributions of time spent answering the survey questions for panels.")
 
 dat1 %>% 
   filter(Section_SUM_main < 20) %>% 
@@ -144,15 +146,15 @@ dat1 %>%
                    color = prob_based)) +
   geom_point() + 
   geom_boxplot() + 
-  geom_hline(yintercept = 70 * 2 / 60, color = "purple", size = 1) +
-  geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2), show.legend = FALSE, color = "purple") +
+  # geom_hline(yintercept = 70 * 2 / 60, color = "purple", size = 1) +
+  # geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2), show.legend = FALSE, color = "purple") +
   scale_color_brewer(palette = "Set1") +
   theme_bw() +
   theme(axis.text.x = element_text(angle=15, hjust=1)) +
   labs(x = "",
-       y = "Total time for sections in minutes",
+       y = "Total time in minutes",
        color = "",
-       title = "Distributions of time answering the survey questions for panels ")
+       title = "Distributions of time spent answering the survey questions for panels.")
 
 dat1 %>% 
   filter(Section_SUM_main < 4) %>% 
@@ -162,14 +164,14 @@ dat1 %>%
   geom_point() + 
   geom_boxplot() + 
   geom_hline(yintercept = 70 * 2 / 60, color = "purple", size = 1) +
-  geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2), show.legend = FALSE, color = "purple") +
+  geom_text(aes(2,70 * 2 / 60, label = "Cutoff Time: 2.33 mins", vjust = -1), show.legend = FALSE, color = "purple") +
   scale_color_brewer(palette = "Set1") +
   theme_bw() +
   theme(axis.text.x = element_text(angle=15, hjust=1)) +
   labs(x = "",
-       y = "Total time for sections in minutes",
+       y = "Total time in minutes",
        color = "",
-       title = "Distributions of time answering the survey questions for panels ")
+       title = "Distributions of time spent answering the survey questions for panels.")
 
 ```
 
@@ -186,9 +188,8 @@ dat1 %>% select(DataSource_name,
                        Section_Length_5,
                        Section_Length_6,
                        Section_Length_7,
-                       Section_Length_9), na.rm = TRUE) *60 /64) %>% 
-  filter(ave > 0,
-         ave < 2) %>% 
+                       Section_Length_9), na.rm = TRUE) *60 /70) %>% 
+  filter(ave < 2) %>% 
   group_by(prob_based, DataSource_name) %>% 
   summarise(count = n()) %>% 
   # mutate(DataSource = as.factor(DataSource)) %>% 
@@ -578,7 +579,7 @@ dat1 %>% # See ages of those spend at 120 hours on TV_TIME
               values_from = HOUR) %>% 
   unnest() %>% 
   mutate("TOTAL" = round((TV_TIME_a+ TV_TIME_b+TV_TIME_c+ TV_TIME_d+ TV_TIME_e+ TV_TIME_f) / 6 * 20), 0) %>% 
-  filter(TOTAL > 112.5)
+  filter(TOTAL > 112.5) 
 ```
 
 
