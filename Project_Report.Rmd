@@ -115,7 +115,7 @@ dat1 %>%
   # geom_hline(yintercept = 70 * 2 / 60, color = "purple", size = 1) +
   # geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2), show.legend = FALSE, color = "purple") +
   scale_color_brewer(palette = "Set1") +
-  theme_bw() +
+  theme_classic() +
   theme(axis.text.x = element_text(angle=15, hjust=1)) +
   labs(x = "",
        y = "Total time in minutes",
@@ -132,7 +132,7 @@ dat1 %>%
   # geom_hline(yintercept = 70 * 2 / 60, color = "purple", size = 1) +
   # geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2), show.legend = FALSE, color = "purple") +
   scale_color_brewer(palette = "Set1") +
-  theme_bw() +
+  theme_classic() +
   theme(axis.text.x = element_text(angle=15, hjust=1)) +
   labs(x = "",
        y = "Total time in minutes",
@@ -149,7 +149,7 @@ dat1 %>%
   # geom_hline(yintercept = 70 * 2 / 60, color = "purple", size = 1) +
   # geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2), show.legend = FALSE, color = "purple") +
   scale_color_brewer(palette = "Set1") +
-  theme_bw() +
+  theme_classic() +
   theme(axis.text.x = element_text(angle=15, hjust=1)) +
   labs(x = "",
        y = "Total time in minutes",
@@ -166,7 +166,7 @@ dat1 %>%
   geom_hline(yintercept = 70 * 2 / 60, color = "purple", size = 1) +
   geom_text(aes(2,70 * 2 / 60, label = "Cutoff Time: 2.33 mins", vjust = -1), show.legend = FALSE, color = "purple") +
   scale_color_brewer(palette = "Set1") +
-  theme_bw() +
+  theme_classic() +
   theme(axis.text.x = element_text(angle=15, hjust=1)) +
   labs(x = "",
        y = "Total time in minutes",
@@ -177,7 +177,7 @@ dat1 %>%
 
 # Page time frequency
 
-```{r}
+```{r straight_freq}
 # page time
 dat1 %>% select(DataSource_name,
                Section_Length_4:Section_Length_9,
@@ -199,11 +199,12 @@ dat1 %>% select(DataSource_name,
              y = count,
              fill = prob_based)) + 
   geom_col() + 
-  theme_bw() +
+  scale_fill_brewer(palette = "Set1") +
+  theme_classic() +
   labs(x = "",
        y = "Number of observations",
        fill = "",
-       title = "Distribution of observations under 2 seconds per question") +
+       title = "Distribution of respondents spent 2 seconds or less per question") +
   geom_text(size = 3, aes(label = round(count, 0)), vjust = -0.5, check_overlap = TRUE, position = position_dodge(width = 0.9)) +
   theme(axis.text.x = element_text(angle=15, hjust=1))
 ```
@@ -250,7 +251,7 @@ Item_non_response %>%
              y = Percentage,
              fill = prob_based)) +
   geom_col() +
-  theme_bw() +
+  theme_classic() +
   labs(fill = "",
        x = "Panels") +
   theme(axis.text.x = element_text(angle=15, hjust=1)) +
@@ -277,7 +278,7 @@ dat1 %>% select(DataSource_name,
              y = Percentage,
              fill = prob_based)) +
   geom_col() +
-  theme_bw() +
+  theme_classic() +
   labs(fill = "",
        x = "Panels") +
   theme(axis.text.x = element_text(angle=15, hjust=1)) +
@@ -288,11 +289,12 @@ dat1 %>% select(DataSource_name,
 
 # Straight lining, use variables: K6, TV_TIME, INTERNET, BENTYPE
 
-```{r}
+```{r straight}
 # Straight lining, use variables: K6, TV_TIME, INTERNET, BENTYPE
 # NOTE: 9 observations (`DataSource`: 2/6/6/6/7/7/7/8/9) select all `YES` in BENTYPE, only one obs reflects on straight-lining
 straight_lining <- dat1 %>% 
   select(DataSource_name,
+         prob_based,
          starts_with("K6_"),
          starts_with("TV_TIME_"),
          starts_with("INTERNET"),
@@ -323,7 +325,7 @@ straight_lining <- dat1 %>%
   mutate(straight_lining = ifelse(sum(K6_IER, 
                                       TV_TIME_IER,
                                       INTERNET_IER,
-                                      BENTYPE_IER) >= 3, 1, 0)) 
+                                      BENTYPE_IER) >= 2, 1, 0)) 
 
 straight_lining %>% 
   select(DataSource_name, straight_lining) %>% 
@@ -331,6 +333,23 @@ straight_lining %>%
   kable(caption = "1 = Straight lining") %>% 
   kable_classic() %>%
   kableExtra::kable_styling(latex_options = "hold_position")
+
+straight_lining %>% 
+  select(prob_based, DataSource_name, straight_lining) %>% 
+  group_by(prob_based, DataSource_name) %>% 
+  summarise(Percentage = mean(straight_lining) * 100) %>% 
+  ggplot(aes(x = DataSource_name,
+             y = Percentage,
+             fill = prob_based)) + 
+  geom_col() +
+  scale_fill_brewer(palette = "Set1") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle=15, hjust=1)) +
+  labs(fill = "",
+       x = "",
+       title = "Percentage of straight lining in each panal") +
+  geom_text(size = 6, aes(label = round(Percentage, 2)), vjust = -0.4, check_overlap = TRUE, position = position_dodge(width = 0.9)) +
+  theme(legend.position = "right")
 ```
 
 # mid-point selection: 
@@ -359,7 +378,7 @@ dat1 %>%
              fill = K6_name)) +
   geom_col(position = "stack") + 
   scale_fill_brewer(palette = "Set3") +
-  theme_bw()
+  theme_classic()
 ```
 
 # mid-point selection (%)
@@ -384,7 +403,7 @@ mps1 <- dat1 %>%
   geom_point() +
   geom_line() + 
   scale_fill_brewer(palette = "Set2") +
-  theme_bw() +
+  theme_classic() +
   theme(legend.position = "bottom")
 
 # With K6
@@ -404,7 +423,7 @@ mps2 <- dat1 %>%
              fill = prob_based)) +
   geom_col() +
   scale_fill_brewer(palette = "Set1") +
-  theme_bw() +
+  theme_classic() +
   labs(fill = "") +
   geom_text(size = 3, aes(label = round(Percentage, 0)), vjust = -0.5, check_overlap = TRUE, position = position_dodge(width = 0.9)) +
   theme(legend.position = "bottom")
@@ -434,7 +453,7 @@ dat1 %>%
              fill = prob_based)) +
   geom_col() +
   scale_fill_brewer(palette = "Set1") +
-  theme_bw() +
+  theme_classic() +
   labs(fill = "") +
   geom_text(size = 3, aes(label = round(Percentage, 0)), vjust = -0.5, check_overlap = TRUE, position = position_dodge(width = 0.9)) 
 
@@ -442,7 +461,7 @@ dat1 %>%
 
 # Consistency
 
-```{r}
+```{r consistency}
 # Consistency
 dat1 %>% 
   select(DataSource_name,
@@ -456,7 +475,7 @@ dat1 %>%
                                          BENTYPE_e
                                          ))) == 5, 1, 0)) %>% 
   filter(K6_IER == 1) %>% 
-  kable(caption = "`YES` for all benefits") %>% 
+  kable(caption = "Receive benefits : 0 = NO , 1 = YES") %>% 
   kable_classic_2() %>%
   kableExtra::kable_styling(latex_options = "hold_position")
 
@@ -480,9 +499,10 @@ BENTYPE_UNPAIDCARE %>%
              fill = prob_based)) +
   geom_col() +
   scale_fill_brewer(palette = "Set1") +
-  theme_bw() +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle=15, hjust=1)) +
   labs(fill = "") +
-  geom_text(size = 3, aes(label = round(Percentage, 2)), vjust = -0.5, check_overlap = TRUE, position = position_dodge(width = 0.9))
+  geom_text(size = 6, aes(label = round(Percentage, 2)), vjust = -0.5, check_overlap = TRUE, position = position_dodge(width = 0.9))
 
 # Correlation AGE AND FIRST DRINK
 dat1 %>% 
@@ -494,15 +514,15 @@ dat1 %>%
          FIRSTDRINK >= 0) %>% 
   ggplot(aes(x = AGE,
              y= FIRSTDRINK)) + 
-  geom_point() +
+  geom_point(col = "blue") +
   geom_point(data = dat1 %>% select(DataSource_name,
                                    AGE,
                                    FIRSTDRINK) %>%
               filter(AGE >= 0,
                      FIRSTDRINK >= 0,
-                     FIRSTDRINK > AGE), color = "red", size = 5) +
+                     FIRSTDRINK > AGE), color = "red", size = 3) +
   geom_abline(slope = 1, color = "red") + 
-  theme_bw() +
+  theme_classic() +
   geom_text(data = dat1 %>% select(DataSource_name,
                                    prob_based,
                                    AGE,
@@ -510,19 +530,23 @@ dat1 %>%
               filter(AGE >= 0,
                      FIRSTDRINK >= 0,
                      FIRSTDRINK > AGE), 
-            size = 5,
+            size = 4,
             color = "red",
             aes(label = paste0(DataSource_name, "\n", "(", prob_based, ")")),
             vjust = -0.5,
             hjust = 0,
             check_overlap = TRUE,
-            position = position_dodge(width = 0.9))
+            position = position_dodge(width = 0.9)) +
+  xlim(c(0,125)) +
+  ylim(c(0, 80)) +
+  labs(y = "FIRSTDRINK",
+       title = "Scatter plot of AGE and FIRSTDRINK")
 ```
 # Extreme values
 
 
 
-```{r}
+```{r extreme}
 dat1 %>%
   select(DataSource_name,
          starts_with("TV_TIME")) %>% 
@@ -535,10 +559,9 @@ dat1 %>%
   unnest() %>% 
   mutate("TOTAL" = round((TV_TIME_a+ TV_TIME_b+TV_TIME_c+ TV_TIME_d+ TV_TIME_e+ TV_TIME_f) / 6 * 20), 0) %>% 
   ggplot(aes(x = TOTAL)) +
-  geom_histogram()+
-  geom_density() +
-  theme_bw() +
-  labs(title = "Minimum time spent on social media each week (in hours).",
+  geom_histogram(fill = "#58a6f5")+
+  theme_classic() +
+  labs(title = "Minimum time spent on social media and TV services each week (in hours).",
        y = "Number of respondents",
        x = "Hour")
 
@@ -562,9 +585,10 @@ dat1 %>%
              fill = prob_based)) +
   geom_col() +
   scale_fill_brewer(palette = "Set1") +
-  theme_bw() +
+  theme_classic() +
   labs(fill = "") +
-  geom_text(size = 3, aes(label = round(Percentage, 2)), vjust = -0.5, check_overlap = TRUE, position = position_dodge(width = 0.9)) 
+  geom_text(size = 4, aes(label = round(Percentage, 2)), vjust = -0.5, check_overlap = TRUE, position = position_dodge(width = 0.9)) +
+  theme(axis.text.x = element_text(angle=15, hjust=1)) 
 
 dat1 %>% # See ages of those spend at 120 hours on TV_TIME
   select(DataSource_name,
