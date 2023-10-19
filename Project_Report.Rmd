@@ -6,6 +6,7 @@ title: |
 date:  "`r format(Sys.time(), '%d %B, %Y')`"
 author:
   - Xianghe XU 
+  - 32929447
   
 team: Group 1
 subtitle: |
@@ -18,7 +19,17 @@ subtitle: |
   __The Australian Comparative Study of Survey Method Data Quality Project.__
   
   | -
-abstract: "The aim of this report..."
+  
+abstract: |
+  **Purpose**: The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.
+
+  **Methods:** The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.
+
+  **Results:** The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.
+
+  **Conclusion:** The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.}
+
+# bibliography: bibliography.bib
 header-includes: 
   - \renewcommand{\and}{\\ \\}
   - \AddToHook{env/abstract/before}{\vspace*{2cm}}
