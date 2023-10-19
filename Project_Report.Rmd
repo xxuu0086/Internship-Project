@@ -4,9 +4,12 @@ title: |
   
   Project Report
 date:  "`r format(Sys.time(), '%d %B, %Y')`"
-author:
-  - Xianghe XU 
-  - 32929447
+author: |
+  | Xianghe Xu
+  |
+  | 32929447
+  |
+  | [Project Github Repository Link](https://github.com/xxuu0086/ETC5543_Internship_Project) 
   
 team: Group 1
 subtitle: |
@@ -47,6 +50,9 @@ output:
 \newpage
 
 \newpage
+
+[This report is for ETC5543 Business Analytics Creative Activity internship project by student __Xianghe Xu__, the github repository for this project is [https://github.com/xxuu0086/ETC5543_Internship_Project](https://github.com/xxuu0086/ETC5543_Internship_Project) .]{style="color:#006DAE;"}
+
 \tableofcontents
 \newpage
 
