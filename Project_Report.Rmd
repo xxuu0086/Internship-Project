@@ -24,13 +24,8 @@ subtitle: |
   | -
   
 abstract: |
-  **Purpose**: The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.
-
-  **Methods:** The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.
-
-  **Results:** The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.
-
-  **Conclusion:** The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.}
+  This report undertakes a comprehensive examination of survey response data quality through a comparison of probability-based methods with non-probability-based methods, using the ACSSM dataset. Various relevant survey response metrics are applied to the dataset variables, enabling the assessment and comparison of response data quality between probability-based and non-probability-based survey methods. The comparative analysis demonstrates that probability-based methods consistently exhibit better data quality in terms of less number of careless survey responses compared to non-probability methods, supporting the hypothesis that non-probability-based methods have worse data quality. 
+  
 
 # bibliography: bibliography.bib
 header-includes: 
@@ -125,6 +120,11 @@ dat1 <- dat1 %>%
 # Survey quality metrics
 
 # Data Description
+- Describe the orginal data sets, should check outlier and missing values.
+- check missings 
+- Remove variables, by how many, 
+- decision rule 
+- description of new and cleaned dataset
 
 # Chanllenges
 - Understand the metrics
