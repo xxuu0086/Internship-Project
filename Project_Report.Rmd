@@ -24,7 +24,8 @@ subtitle: |
   | -
   
 abstract: |
-  This report undertakes a comprehensive examination of survey response data quality through a comparison of probability-based methods with non-probability-based methods, using the ACSSM dataset. Various relevant survey response metrics are applied to the dataset variables, enabling the assessment and comparison of response data quality between probability-based and non-probability-based survey methods. The comparative analysis demonstrates that probability-based methods consistently exhibit better data quality in terms of less number of careless survey responses compared to non-probability methods, supporting the hypothesis that non-probability-based methods have worse data quality. 
+
+  This report conducts a comprehensive examination of survey response data quality through a comparison of probability-based methods with non-probability-based methods, using the ACSSM dataset. Various relevant survey response metrics are applied to the dataset variables, enabling the assessment and comparison of response data quality between probability-based and non-probability-based survey methods, particularly regarding the number of careless survey responses in each survey. The results of the comparative analysis demonstrate that probability-based methods exhibit fewer careless responses compared to non-probability methods across nearly all survey response metrics used in this project. This finding supports the hypothesis that non-probability-based methods result in poorer data quality.
   
 
 # bibliography: bibliography.bib
