@@ -143,7 +143,13 @@ __Response time analysis__
 
 - Response time analysis, often referred to as speeding, is a metric that focuses on the time taken to complete a survey or answer questions in a section of a survey. This metric typically relies on page time, which is the duration between the initiation and submission of each survey page or section online. Specifically, it examines instances of extremely small page time values, as such values indicate minimal cognitive processing of survey content. Moreover, this metric involves the use of a "cutoff" time, which is a manually set threshold. Respondents whose page time falls below this "cutoff" time are considered to be responding "carelessly."
 
+__Straight lining__ 
 
+- Straight-lining, also known as response pattern analysis, refers to the tendency of respondents to select the same or very similar answer options for each item in a grid. When respondents consistently provide identical responses to a set of questions, it creates a pattern that resembles a straight line, hence the name "straight-lining" for this metric. This uniformity in responses across a set of questions suggests that the survey respondents are making minimal effort when completing the survey.
+
+__Consistency approach__
+
+- 
 
 
 
