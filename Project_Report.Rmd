@@ -127,7 +127,23 @@ In this project, survey data will be drawn from the ACSSM study. The principal a
 
 By consolidating the results from each metric and aggregating the outcomes of all metrics, we will draw a final conclusion regarding the comparison of data quality between probability-based and non-probability-based methods. The ultimate goal is to find evidence that support the hypothesis suggesting that non-probability-based panels exhibit worse data quality when compared to probability-based panels. 
 
-# Survey quality metrics
+# Survey response metrics
+
+Surveys are fundamental tools for collecting data, whether from the entire population or a specific group, for experimental or non-experimental research. In real life, we've all experienced or completed surveys in various aspects of our lives, such as student surveys or experience surveys etc... There are numerous incentives that motivate people to participate in surveys. Some do it to contribute to research or a study, while others may be requested by organizations. Some participate for a chance to win prizes or receive cashback after completing the survey. These reasons drive individuals to complete surveys. However, this poses a challenge as some respondents may rush through surveys, investing minimum amount of attention and effort.
+
+This issue is particularly relevant for self-report data collections, commonly used in both experimental and non-experimental psychology, often gathered through online measures. Invalid data can be present in such collections for various reasons, with one major factor being careless or insufficient effort (C/IE) in responding (Curran, 2016).
+
+The primary objective of this project is to compare the data quality of surveys between probability-based and non-probability-based methods. This raises the question of what constitutes data quality and how it can be measured across different surveys. Survey response metrics provide the answer. To measure data quality, the first step is to use these survey response metrics to identify careless or insufficient effort responses in each survey method. A survey with a low number of careless responses indicates that most participants made a genuine effort to answer the questions carefully, implying high data quality. Conversely, a survey with a high number of careless responses suggests that participants did not pay much attention and may have randomly answered questions, indicating lower data quality. Therefore, the number of careless responses in a survey becomes an important indicator for comparing data quality across different survey methods.
+
+To initiate this project, it's essential for me to gain a comprehensive understanding of the definitions and practical applications of the available survey response metrics. This entails not only comprehending the significance of each metric but also mastering the techniques for their implementation. My objective is to skillfully apply these metrics to the ACSSM dataset, as well as various variables within it, in order to identify careless responses. Simultaneously, I need to remain aware of the limitations associated with these metrics.
+
+In my journey to learn and master these metrics, I've taken the opportunity to review several articles dedicated to survey response quality. These articles have provided valuable insights into the key metrics that are essential for our project. I have summarized some of the key metrics as follows:
+
+
+With these metrics now at the forefront of our considerations, we can proceed to conduct a thorough examination of the ACSSM dataset.
+
+
+
 
 # Data Description
 - Describe the orginal data sets, should check outlier and missing values.
