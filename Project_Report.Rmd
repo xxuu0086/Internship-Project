@@ -116,7 +116,16 @@ dat1 <- dat1 %>%
 ```
 
 # Introduction and Motivation
-(include the readings)
+
+In the age of big data, survey research stands out as a fundamental tool for gathering valuable insights from the population. The quality of the responses collected holds paramount importance in making informed decisions. Recent advancements in technology and communication methods have led to a rise in surveys that assessible exclusively to specific groups through online platforms and social media. These surveys are designed for particular purposes, offering less costly and time-efficient data collection. This approach is commonly known as non-probability-based survey methods, in contrast to surveys that aim to collect data from the entire population, referred to as probability-based methods.
+
+Probability-based and non-probability-based survey methods represent two distinct approaches to data collection, prompting our curiosity about the data quality associated with each. However, response quality in non-probability online panels has received limited attention, and there is a scarcity of research on the performance of non-probability-based methods. The study in this project sets out to address the fundamental question: How do probability-based and non-probability-based survey methods compare in terms of data quality?
+
+To investigate this question, the Social Research Centre has conducted a study in 2022 known as the Australian Comparative Study of Survey Method (ACSSM). This study is the first of its kind in Australia, delving into the examination of probability-based and non-probability-based survey methods. The primary aim of this study is to evaluate contemporary and emerging practices for general population surveys. It involves using different survey methods and approaches to collect survey data for the ACSSM study. 
+
+In this project, survey data will be drawn from the ACSSM study. The principal aim of this project is to employ a variety of survey response metrics, including individual assessments of metrics such as speeding, straight-lining, outlier analysis, and more. The objective is to conduct a comprehensive comparison of survey response quality between probability-based and non-probability-based survey panels. This comprehensive evaluation will encompass assessments of response completeness, accuracy, reliability, and an overall comparison within both probability-based and non-probability-based surveys.
+
+By consolidating the results from each metric and aggregating the outcomes of all metrics, we will draw a final conclusion regarding the comparison of data quality between probability-based and non-probability-based methods. The ultimate goal is to find evidence that support the hypothesis suggesting that non-probability-based panels exhibit worse data quality when compared to probability-based panels. 
 
 # Survey quality metrics
 
