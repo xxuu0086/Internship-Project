@@ -139,11 +139,15 @@ To initiate this project, it's essential for me to gain a comprehensive understa
 
 In my journey to learn and master these metrics, I've taken the opportunity to review several articles dedicated to survey response quality. These articles have provided valuable insights into the key metrics that are essential for our project. I have summarized some of the key metrics as follows:
 
+__Response time analysis__
+
+- Response time analysis, often referred to as speeding, is a metric that focuses on the time taken to complete a survey or answer questions in a section of a survey. This metric typically relies on page time, which is the duration between the initiation and submission of each survey page or section online. Specifically, it examines instances of extremely small page time values, as such values indicate minimal cognitive processing of survey content. Moreover, this metric involves the use of a "cutoff" time, which is a manually set threshold. Respondents whose page time falls below this "cutoff" time are considered to be responding "carelessly."
+
+
+
+
 
 With these metrics now at the forefront of our considerations, we can proceed to conduct a thorough examination of the ACSSM dataset.
-
-
-
 
 # Data Description
 - Describe the orginal data sets, should check outlier and missing values.
