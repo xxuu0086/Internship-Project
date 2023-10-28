@@ -229,18 +229,95 @@ Now, after cleaning and organizing the data set, the new ACSSM data set contains
 We have the cleaned ACSSM data set ready. Now, it's time to connect the metrics with the variables in the data set. To simplify the connection process, I have created an Excel spreadsheet. In this spreadsheet, I've listed all the questions from different sections of the survey, along with some potentially applicable metrics listed on the other side of the spreadsheet. Using Excel spreadsheet provides an overview of all survey questions, which will facilitate the connection between metrics and variables. You can find this Excel spreadsheet named "Survey_question.xlsx" in the "Project_related_material" folder.
 
 
-Figure \@ref(fig:box-plot-clean)
-- decision rule 
-- description of new and cleaned dataset
-
 # Chanllenges
 - Understand the metrics
 - matching the metrics to variables
 
-# Preliminary Analysis
 
 # Analysis
 
+### Response Time Analysis
+
+```{r time1, fig.cap="Distributions of time spent answering the survey questions for panels."}
+dat1 %>% 
+  mutate("Section_SUM_main" = Section_Loop_Section4_SectionTimeMinutes + 
+           Section_Loop_Section5_SectionTimeMinutes +
+           Section_Loop_Section6_SectionTimeMinutes +
+           Section_Loop_Section7_SectionTimeMinutes +
+           Section_Loop_Section9_SectionTimeMinutes) %>% 
+  ggplot(aes(x = DataSource_name,
+                   y = Section_SUM_main,
+                   color = prob_based)) +
+  geom_point() + 
+  geom_boxplot() + 
+  # geom_hline(yintercept = 70 * 2 / 60, color = "purple", size = 1) +
+  # geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2), show.legend = FALSE, color = "purple") +
+  scale_color_brewer(palette = "Set1") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle=15, hjust=1)) +
+  labs(x = "",
+       y = "Total time in minutes",
+       color = "")
+```
+
+The above Figure \@ref(fig:time1) illustrates the distributions of time consumed for answering survey questions for different panels. From Figure \@ref(fig:time1), the distributions are widely spread out; some respondents are using less time to complete the survey while some other respondent seems spend a long time to provide answers to the survey questions. 
+
+```{r}
+# distribution of page time for section 2, 4-9
+
+
+dat1 %>% 
+  filter(Section_SUM_main < 120) %>% 
+  ggplot(aes(x = DataSource_name,
+                   y = Section_SUM_main,
+                   color = prob_based)) +
+  geom_point() + 
+  geom_boxplot() + 
+  # geom_hline(yintercept = 70 * 2 / 60, color = "purple", size = 1) +
+  # geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2), show.legend = FALSE, color = "purple") +
+  scale_color_brewer(palette = "Set1") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle=15, hjust=1)) +
+  labs(x = "",
+       y = "Total time in minutes",
+       color = "",
+       title = "Distributions of time spent answering the survey questions for panels.")
+
+dat1 %>% 
+  filter(Section_SUM_main < 20) %>% 
+  ggplot(aes(x = DataSource_name,
+                   y = Section_SUM_main,
+                   color = prob_based)) +
+  geom_point() + 
+  geom_boxplot() + 
+  # geom_hline(yintercept = 70 * 2 / 60, color = "purple", size = 1) +
+  # geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2), show.legend = FALSE, color = "purple") +
+  scale_color_brewer(palette = "Set1") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle=15, hjust=1)) +
+  labs(x = "",
+       y = "Total time in minutes",
+       color = "",
+       title = "Distributions of time spent answering the survey questions for panels.")
+
+dat1 %>% 
+  filter(Section_SUM_main < 4) %>% 
+  ggplot(aes(x = DataSource_name,
+                   y = Section_SUM_main,
+                   color = prob_based)) +
+  geom_point() + 
+  geom_boxplot() + 
+  geom_hline(yintercept = 70 * 2 / 60, color = "purple", size = 1) +
+  geom_text(aes(2,70 * 2 / 60, label = "Cutoff Time: 2.33 mins", vjust = -1), show.legend = FALSE, color = "purple") +
+  scale_color_brewer(palette = "Set1") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle=15, hjust=1)) +
+  labs(x = "",
+       y = "Total time in minutes",
+       color = "",
+       title = "Distributions of time spent answering the survey questions for panels.")
+
+```
 # Limitation
 
 # Summary
