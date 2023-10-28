@@ -151,6 +151,10 @@ __Consistency approach__
 
 - This metric goes by various names, including individual consistency, inconsistent approach, psychometric antonyms, and individual reliability, and other names. Despite the different terminology, these terms all refer to the same concept, which involves assessing the consistency of survey responses provided by an individual. In essence, this approach typically involves using matched item pairs and comparing the responses to one item with the responses to another item. The matched item pairs should exhibit either a high positive correlation or a high negative correlation. Consistency in the paired responses is essential to ensure that survey respondents are providing thoughtful and careful answers. In contrast, inconsistent paired responses would suggest that respondents are answering the survey carelessly and randomly.
 
+____
+
+It's important to note that there are quite many survey response metrics available, and not all of them can be applied to the ACSSM dataset in this project. Only certain metrics are suitable for this dataset, so I won't list descriptions for all of them here. Some metrics can be used multiple times within the dataset, like the consistency approach, which allows for checking the consistency of more than one pair of responses in the dataset.
+
 With these metrics now at the forefront of our considerations, we can proceed to conduct a thorough examination of the ACSSM dataset.
 
 # Data Description
