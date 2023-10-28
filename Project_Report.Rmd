@@ -165,6 +165,14 @@ __Midpoint selection__
 
 - Midpoint selection is a response metric that refers to respondents selecting the middle answer from a list of answer options. The middle answer on the scale is often "Neither agree nor disagree" or "neutral." Similar to the "item non-response" metric, the behavior of choosing the middle value answer can sometimes be interpreted as respondents who are not willing to put in much effort to consider their true response to a question. Instead, they pick for the middle point, indicating neither agreement nor disagreement with the survey question. In this metric, I will focus on questions with ordinal responses, such as "Strongly agree," "Agree," "Neither agree nor disagree," "Disagree," and "Strongly disagree." These types of questions are more likely to elicit middle point selections, which can be considered a form of insufficient effort responding.
 
+__Bogus Items__
+
+- Bogus items are questions that have an obvious correct answer, making an incorrect response indicative of inattention to the question. If a survey respondent fails to provide the correct answer to a question with an obvious solution, it implies that the respondent is responding to the survey carelessly, without properly reading the question. This metric is straightforward to implement; it involves identifying bogus items in the survey data and examining responses that deviate from the correct answer.
+
+__Mahalanobis Distance__
+
+- Mahalanobis distance is a metric similar to outlier analysis. Both metrics seek extreme values that deviate from the main distribution. The key difference is that Mahalanobis distance is a multivariate outlier technique, whereas outlier analysis examines single variables. This metric calculates the distance of data points from the multivariate center, allowing it to determine whether a respondent falls at the edge of the multivariate distribution formed by responses to all items. If a respondent is positioned far from the distribution in multivariate space, they may be considered unusual and potentially careless in responding their surveys. 
+
 
 The descriptions above provide a brief overview of the metrics used in this project. It's important to note that there are quite many survey response metrics available, and not all of them can be applied to the ACSSM dataset in this project. Only certain metrics are suitable for this dataset, so I won't list descriptions for all of them here. Some metrics can be used multiple times within the dataset, like the consistency approach, which allows for checking the consistency of more than one pair of responses in the dataset.
 
