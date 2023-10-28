@@ -267,6 +267,11 @@ The above Figure \@ref(fig:time1) illustrates the distributions of time consumed
 
 
 dat1 %>% 
+  mutate("Section_SUM_main" = Section_Loop_Section4_SectionTimeMinutes + 
+           Section_Loop_Section5_SectionTimeMinutes +
+           Section_Loop_Section6_SectionTimeMinutes +
+           Section_Loop_Section7_SectionTimeMinutes +
+           Section_Loop_Section9_SectionTimeMinutes) %>%
   filter(Section_SUM_main < 120) %>% 
   ggplot(aes(x = DataSource_name,
                    y = Section_SUM_main,
@@ -284,7 +289,12 @@ dat1 %>%
        title = "Distributions of time spent answering the survey questions for panels.")
 
 dat1 %>% 
-  filter(Section_SUM_main < 20) %>% 
+  mutate("Section_SUM_main" = Section_Loop_Section4_SectionTimeMinutes + 
+           Section_Loop_Section5_SectionTimeMinutes +
+           Section_Loop_Section6_SectionTimeMinutes +
+           Section_Loop_Section7_SectionTimeMinutes +
+           Section_Loop_Section9_SectionTimeMinutes) %>%
+  filter(Section_SUM_main < 60) %>% 
   ggplot(aes(x = DataSource_name,
                    y = Section_SUM_main,
                    color = prob_based)) +
@@ -301,13 +311,18 @@ dat1 %>%
        title = "Distributions of time spent answering the survey questions for panels.")
 
 dat1 %>% 
-  filter(Section_SUM_main < 4) %>% 
+  mutate("Section_SUM_main" = Section_Loop_Section4_SectionTimeMinutes + 
+           Section_Loop_Section5_SectionTimeMinutes +
+           Section_Loop_Section6_SectionTimeMinutes +
+           Section_Loop_Section7_SectionTimeMinutes +
+           Section_Loop_Section9_SectionTimeMinutes) %>%
+  filter(Section_SUM_main < 10) %>% 
   ggplot(aes(x = DataSource_name,
                    y = Section_SUM_main,
                    color = prob_based)) +
   geom_point() + 
   geom_boxplot() + 
-  geom_hline(yintercept = 70 * 2 / 60, color = "purple", size = 1) +
+  geom_hline(yintercept = 70 * 5 / 60, color = "purple", size = 1) +
   geom_text(aes(2,70 * 2 / 60, label = "Cutoff Time: 2.33 mins", vjust = -1), show.legend = FALSE, color = "purple") +
   scale_color_brewer(palette = "Set1") +
   theme_classic() +
