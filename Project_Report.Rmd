@@ -82,38 +82,6 @@ library(naniar)
 dat <- haven::read_sav("../Data and survey materials/ACSSM_Merged.sav")
 ```
 
-```{r}
-dat1 <- dat %>% 
-  mutate(prob_based = ifelse(DataSource <= 5, "Probablity based", "Non-probablity based")) %>% # Indicate probability based
-  filter(DataSource %in% c(2, 5, 6, 7, 8, 9)) # Filter data source
-
-```
-
-
-```{r}
-# Mutate new column with DataSource name
-dat1 <- dat1 %>% 
-  mutate(DataSource_name = case_when(
-    DataSource == 2 ~ "Life in Australia",
-    DataSource == 5 ~ "SMS push to web",
-    DataSource == 6 ~ "Panel 1",
-    DataSource == 7 ~ "Panel 2",
-    DataSource == 8 ~ "Panel 3",
-    DataSource == 9 ~ "Panel 4")) %>% 
-  mutate(DataSource_name = factor(DataSource_name,
-                       levels = c("Life in Australia",
-                                  "SMS push to web",
-                                  "Panel 1",
-                                  "Panel 2",
-                                  "Panel 3",
-                                  "Panel 4"),
-                       labels = c("Life in Australia",
-                                  "SMS push to web",
-                                  "Panel 1",
-                                  "Panel 2",
-                                  "Panel 3",
-                                  "Panel 4"))) # Use str() to check levels
-```
 
 # Introduction and Motivation
 
@@ -163,7 +131,7 @@ __Item non-response__
 
 __Midpoint selection__
 
-- Midpoint selection is a response metric that refers to respondents selecting the middle answer from a list of answer options. The middle answer on the scale is often "Neither agree nor disagree" or "neutral." Similar to the "item non-response" metric, the behavior of choosing the middle value answer can sometimes be interpreted as respondents who are not willing to put in much effort to consider their true response to a question. Instead, they pick for the middle point, indicating neither agreement nor disagreement with the survey question. In this metric, I will focus on questions with ordinal responses, such as "Strongly agree," "Agree," "Neither agree nor disagree," "Disagree," and "Strongly disagree." These types of questions are more likely to elicit middle point selections, which can be considered a form of insufficient effort responding.
+- Midpoint selection is a response metric that refers to respondents selecting the middle answer from a list of answer options. The middle answer on the scale is often "Neither agree nor disagree" or "neutral." Similar to the "item non-response" metric, the behavior of choosing the middle value answer can sometimes be interpreted as respondents who are not willing to put in much effort to consider their true response to a question. Instead, they pick for the middle point, indicating neither agreement nor disagreement with the survey question. In this metric, I will focus on questions with ordinal responses, such as "Strongly agree", "Agree", "Neither agree nor disagree", "Disagree", and "Strongly disagree." These types of questions are more likely to elicit middle point selections, which can be considered a form of insufficient effort responding.
 
 __Bogus Items__
 
@@ -178,9 +146,10 @@ The descriptions above provide a brief overview of the metrics used in this proj
 
 With these metrics now at the forefront of our considerations, we can proceed to conduct a thorough examination of the ACSSM dataset.
 
+
 # Data Description
 
-After familiarising ourselves with some of the popular survey response metrics discussed above, we have gained an understanding of their meaning and practical implementation. Now, it's time to delve into the dataset and establish connections between these metrics and the data. The data set used in this project is sourced from the study 'The Australian Comparative Study of Survey Method'. This study encompasses survey data from nine surveys, with five of them being probability based and the remaining four non-probability based. The data set comprises 6,043 rows of observations, indicating the participation of 6,043 survey respondents in the study. It has 290 columns, implying presence of 290 variables within the data set. It's important to note that not all 290 variables are survey questions; some variables represent the survey questions posed to each respondent and record their responses. Other variables contain additional information about the surveys, such as the respondent's 'serial number', 'ID', and 'DataSource', which records additional information about the survey respondents. As discussed earlier, there are many response metrics available and not all metrics will be used in this data set, similarly, not all variables will be used to compare the quality of survey data. Therefore, before applying the metrics to the data, I must manually review each variable to identify the right ones for the metrics. Some metrics are straightforward to apply to the variable. For instance, the response time analysis metric only requires the page time. In such cases, I can directly access the variable that contains the page time which is the time taken to answer the survey questions and use it for response time analysis, thus determining whether respondents are responding quickly or not. However, some metrics are more complex to implement. For example, the consistency approach requires paired variables that exhibit high positive or negative correlations. Pairing these variables is a manual process. 
+After familiarising ourselves with some of the popular survey response metrics discussed above, we have gained an understanding of their meaning and practical implementation. Now, it's time to delve into the dataset and establish connections between these metrics and the data. The data set used in this project is sourced from the study 'The Australian Comparative Study of Survey Method'. This study encompasses survey data from eight surveys, with four of them being probability based and the remaining four non-probability based. The data set comprises 6,043 rows of observations, indicating the participation of 6,043 survey respondents in the study. It has 290 columns, implying presence of 290 variables within the data set. It's important to note that not all 290 variables are survey questions; some variables represent the survey questions posed to each respondent and record their responses. Other variables contain additional information about the surveys, such as the respondent's 'serial number', 'ID', and 'DataSource', which records additional information about the survey respondents. As discussed earlier, there are many response metrics available and not all metrics will be used in this data set, similarly, not all variables will be used to compare the quality of survey data. Therefore, before applying the metrics to the data, I must manually review each variable to identify the right ones for the metrics. Some metrics are straightforward to apply to the variable. For instance, the response time analysis metric only requires the page time. In such cases, I can directly access the variable that contains the page time which is the time taken to answer the survey questions and use it for response time analysis, thus determining whether respondents are responding quickly or not. However, some metrics are more complex to implement. For example, the consistency approach requires paired variables that exhibit high positive or negative correlations. Pairing these variables is a manual process. 
 
 Now, let's take a quick glance at the data set to get an initial impression of its structure and determine whether any cleaning and tidying are required.
 
@@ -198,19 +167,69 @@ dat %>%
 miss10 <- dat %>%
   naniar::miss_var_summary() %>% 
   filter(pct_miss > 10) %>% 
-  ggplot()
   summarise("Count" = n()) %>% 
+  table() %>% 
   kable(caption = "Total number of variables with more than 10% of missings") %>%
   kableExtra::kable_styling(latex_options = "hold_position")
 ```
 
 Table \@ref(tab:miss1) displays the top 10 variables with the greatest number of missing values. In this table, the left columns show the names of the variables in the data set, while the columns 'n_miss' and 'pct_miss' represent the number of missing values and the percentage of missing values within each corresponding variable. It is evident that each of the top 10 variables has almost 100% missing values. A variable with a high percentage of missing values is not useful for analysis and should be ignored or removed from the data set. In fact, variables with more than 10% missing values should not be used in any analysis, especially in data sets with a large number of observations, as a high percentage of missing values can introduce bias into the analysis.
 
-The table \@ref(tab:miss2) reveals that there are 91 variables in this data set with more than 10% missing values. These variables will be removed from the data set to ensure that the analysis in this project is based on variables with relatively completed data. This step will contribute to more accurate and less biased results in the survey method data quality analysis.
+There are 91 variables in this data set with more than 10% missing values. These variables will be removed from the data set to ensure that the analysis in this project is based on variables with relatively completed data. This step will contribute to more accurate and less biased results in the survey method data quality analysis.
+
+```{r}
+# Summarise missings in variables
+miss_var_list <- dat %>% naniar::miss_var_summary() 
+
+miss_var_list <- miss_var_list[1:91,1] 
+
+dat <- dat[, !(names(dat) %in% miss_var_list$variable)]
+
+```
+
+```{r}
+dat1 <- dat %>% 
+  mutate(prob_based = ifelse(DataSource <= 5, "Probablity based", "Non-probablity based")) %>% # Indicate probability based
+  filter(DataSource %in% c(2, 5, 6, 7, 8, 9)) # Filter data source
+
+```
+
+
+```{r}
+# Mutate new column with DataSource name
+dat1 <- dat1 %>% 
+  mutate(DataSource_name = case_when(
+    DataSource == 2 ~ "Life in Australia",
+    DataSource == 5 ~ "SMS push to web",
+    DataSource == 6 ~ "Panel 1",
+    DataSource == 7 ~ "Panel 2",
+    DataSource == 8 ~ "Panel 3",
+    DataSource == 9 ~ "Panel 4")) %>% 
+  mutate(DataSource_name = factor(DataSource_name,
+                       levels = c("Life in Australia",
+                                  "SMS push to web",
+                                  "Panel 1",
+                                  "Panel 2",
+                                  "Panel 3",
+                                  "Panel 4"),
+                       labels = c("Life in Australia",
+                                  "SMS push to web",
+                                  "Panel 1",
+                                  "Panel 2",
+                                  "Panel 3",
+                                  "Panel 4"))) # Use str() to check levels
+```
+
+The variables with more than 10% missing values have been successfully removed from the dataset. As previously mentioned, the ACSSM dataset originally contained data from 8 surveys. However, I was instructed by the social research center not to use two of them. As a result, I am left with data from 6 surveys that can be used for comparing survey data quality. Out of these 6 surveys, two are probability-based, and four are non-probability-based. While the number of probability-based surveys is now less than the number of non-probability surveys, this discrepancy does not pose a problem because the goal is to compare the data quality between the surveys.
+
+To facilitate the comparison and improve the clarity of the analysis, I have added two new columns to the dataset. The first column labels whether a respondent is from a probability-based survey or a non-probability-based survey. The second column contains the full names of the surveys, corresponding to the index numbers in the 'DataSource' variable. This is particularly useful because, in the ACSSM data, each survey is represented by digits in the 'DataSource' variable, which can be confusing at times. By adding this new column with corresponding survey names, it becomes easier to identify which survey a respondent belongs to. In this new column, "Life in Australia" and "SMS push to web" surveys are classified as probability-based, while "Panel 1", "Panel 2", "Panel 3", and "Panel 4" surveys are considered non-probability-based.
+
+Now, after cleaning and organizing the data set, the new ACSSM data set contains 4,640 observations and 201 variables.
+
+We have the cleaned ACSSM data set ready. Now, it's time to connect the metrics with the variables in the data set. To simplify the connection process, I have created an Excel spreadsheet. In this spreadsheet, I've listed all the questions from different sections of the survey, along with some potentially applicable metrics listed on the other side of the spreadsheet. Using Excel spreadsheet provides an overview of all survey questions, which will facilitate the connection between metrics and variables. You can find this Excel spreadsheet named "Survey_question.xlsx" in the "Project_related_material" folder.
 
 
 Figure \@ref(fig:box-plot-clean)
-- Remove variables, by how many, 
 - decision rule 
 - description of new and cleaned dataset
 
