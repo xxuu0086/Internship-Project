@@ -36,7 +36,7 @@ header-includes:
 output:
   bookdown::pdf_document2:
     toc: FALSE
-    number_sections: TRUE
+    number_sections: FALSE
     keep_md: yes
   html_document: default
    
@@ -179,6 +179,9 @@ The descriptions above provide a brief overview of the metrics used in this proj
 With these metrics now at the forefront of our considerations, we can proceed to conduct a thorough examination of the ACSSM dataset.
 
 # Data Description
+
+After familiarising ourselves with some of the popular survey response metrics discussed above, we have gained an understanding of their meaning and practical implementation. Now, it's time to delve into the dataset and establish connections between these metrics and the data. The data set used in this project is sourced from the study 'The Australian Comparative Study of Survey Method'. This study encompasses survey data from nine surveys, with five of them being probability based and the remaining four non-probability based. The data set comprises 6,043 rows of observations, indicating the participation of 6,043 survey respondents in the study. It has 290 columns, implying presence of 290 variables within the data set. It's important to note that not all 290 variables are survey questions; some variables represent the survey questions posed to each respondent and record their responses. Other variables contain additional information about the surveys, such as the respondent's 'serial number', 'ID', and 'DataSource', which records additional information about the survey respondents. As discussed earlier, there are many response metrics available and not all metrics will be used in this data set, similarly, not all variables will be used to compare the quality of survey data. Therefore, before applying the metrics to the data, I must manually review each variable to identify the right ones for the metrics. Some metrics are straightforward to apply to the variable. For instance, the response time analysis metric only requires the page time. In such cases, I can directly access the variable that contains the page time which is the time taken to answer the survey questions and use it for response time analysis, thus determining whether respondents are responding quickly or not. However, some metrics are more complex to implement. For example, the consistency approach requires paired variables that exhibit high positive or negative correlations. Pairing these variables is a manual process. 
+
 - Describe the orginal data sets, should check outlier and missing values.
 - check missings 
 - Remove variables, by how many, 
