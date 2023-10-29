@@ -134,7 +134,7 @@ In my journey to learn and master these metrics, I've taken the opportunity to r
 
 ### Midpoint selection
 
-- Midpoint selection is a response metric that refers to respondents selecting the middle answer from a list of answer options. The middle answer on the scale is often "Neither agree nor disagree" or "neutral." Similar to the "item non-response" metric, the behavior of choosing the middle value answer can sometimes be interpreted as respondents who are not willing to put in much effort to consider their true response to a question. Instead, they pick for the middle point, indicating neither agreement nor disagreement with the survey question. In this metric, I will focus on questions with ordinal responses, such as "Strongly agree", "Agree", "Neither agree nor disagree", "Disagree", and "Strongly disagree." These types of questions are more likely to elicit middle point selections, which can be considered a form of insufficient effort responding.
+- Midpoint selection is a response metric that refers to respondents selecting the middle answer from a list of answer options. The middle answer on the scale is often "Neither agree nor disagree" or "neutral". Similar to the "item non-response" metric, the behavior of choosing the middle value answer can sometimes be interpreted as respondents who are not willing to put in much effort to consider their true response to a question. Instead, they pick for the middle point, indicating neither agreement nor disagreement with the survey question. In this metric, I will focus on questions with ordinal responses, such as "Strongly agree", "Agree", "Neither agree nor disagree", "Disagree", and "Strongly disagree." These types of questions are more likely to elicit middle point selections, which can be considered a form of insufficient effort responding.
 
 ### Bogus Items
 
@@ -508,7 +508,7 @@ The second pair of variables includes 'AGE' and 'FIRSTDRINK'. 'AGE' is a questio
 
 Figure \@ref(fig:c2) is a scatter plot of the variables 'AGE' and 'FIRSTDRINK' with a red 45-degree line dividing the plot into two sections. We know that the value of 'AGE' should always be greater than or equal to 'FIRSTDRINK'. If this is the case, all data points should fall on the red line or on the right side of the red line. However, there are two respondents from non-probability based surveys who violate this rule; they appear on the left side of the 45-degree line. This implies that these two respondents are in their age of 20s but they claim to have had their first alcoholic beverage in their 30s and 50s, respectively. This is impossible, suggesting that these two respondents from non-probability based surveys are providing careless responses to the 'AGE' and 'FIRSTDRINK' questions.
 
-Both sets of paired variables, as demonstrated in Figure \@ref(fig:c1) and Figure \@ref(fig:c2), reveal a higher presence of careless responses in non-probability-based survey panels.
+Both sets of paired variables, as demonstrated in Figure \@ref(fig:c1) and Figure \@ref(fig:c2), reveal a higher presence of careless responses in non-probability based survey panels.
 
 ### Outlier analysis
 
@@ -580,6 +580,43 @@ In the ACSSM data set, there are six questions that inquire about the time spent
 However, these six questions pertain to different kinds of video and TV services. To gain a visual overview of the aggregated time spent on all these services, I summed up the hours from all six questions based on respondents' answers. The resulting histogram distribution in Figure \@ref(fig:o1) displays the total time spent on video and TV services per week. This distribution is right-skewed, with a center around 40 hours per week. The distribution also reveals some extreme values, with a few respondents indicating that they spend over 120 hours on video and TV services, which is quite unusual, given that this would mean spending at least 17 hours each day on such activities.
 
 Figure \@ref(fig:o2) illustrates the percentages of respondents who report spending at least 120 hours on video and TV services per week in each survey. Allocating 120 hours to watching video and TV can be considered highly unusual, suggesting that these respondents may not have read the questions properly or have provided random answers. In either case, such respondents can be classified as careless respondents. The data in Figure \@ref(fig:o2) shows that non-probability based survey panels have a majority of careless respondents who report watching more than 120 hours of video and TV per week.
+
+### Midpoint selection
+
+Selecting the middle answer from a set of answer options can sometimes indicate insufficient effort in responding, as it suggests that the respondents are not willing to exert the effort needed to choose the correct answer from the provided scale.
+
+```{r mid1, fig.cap="Distribution plot of percentage of selecting middle response for each survey."}
+# Plot percentage of selection middle answer in each survey for a selection of questions
+dat1 %>% 
+  select(DataSource_name,
+         prob_based,
+         starts_with("K6_")) %>% 
+  pivot_longer(K6_a_resp:K6_f_resp,
+               names_to = "K6_name",
+               values_to = "K6_value") %>% 
+  mutate(K6_value = as.numeric(K6_value)) %>% 
+  mutate(K6_IER = ifelse(K6_value == 3, 1, 0)) %>% 
+  group_by(prob_based, DataSource_name) %>% 
+  summarise(Percentage = sum(K6_IER) / n() * 100) %>% 
+  ggplot(aes(x = DataSource_name,
+             y = Percentage,
+             fill = prob_based)) +
+  geom_col() +
+  scale_fill_brewer(palette = "Set1") +
+  theme_classic() +
+  labs(fill = "",
+       x = "",
+       title = "Percentage of Mid-point selection for selected questions") +
+  geom_text(size = 5,
+            aes(label = round(Percentage, 0)),
+            vjust = -0.5, check_overlap = TRUE, 
+            position = position_dodge(width = 0.9)) +
+  theme(legend.position = "bottom")
+```
+
+Figure \@ref(fig:mid1) presents a histogram showing the distribution of the percentage of respondents who select the middle answer for selected questions across each survey panel. These selected questions have a higher likelihood of triggering mid-point selection, typically featuring ordinal answer scales with options like "Neither agree nor disagree" or "neutral".
+
+The figure \@ref(fig:mid1) indicates that there is a similar percentage of respondents in each survey who choose the middle answer for these questions. This suggests that both the probability based and non-probability based surveys exhibit similar performance in terms of the Mid-point selection metric. 
 
 # Limitation
 
