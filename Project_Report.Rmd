@@ -618,6 +618,57 @@ Figure \@ref(fig:mid1) presents a histogram showing the distribution of the perc
 
 The figure \@ref(fig:mid1) indicates that there is a similar percentage of respondents in each survey who choose the middle answer for these questions. This suggests that both the probability based and non-probability based surveys exhibit similar performance in terms of the Mid-point selection metric. 
 
+### Item non-response
+
+Item non-response refers to respondents choosing 'Don't know' or 'Refused to answer' for survey questions. Individuals who do not wish to answer a question or do not want to expend much effort considering the response are likely to choose 'Don't know' or 'Refused to answer'. The quantity of 'Item non-response' answers in a survey can be indicative of the extent of insufficient effort responding present in that survey.
+
+```{r non, fig.cap="The distribution of the percentage of item non-response in each survey."}
+# Percentage of item non-response
+Item_non_response <- dat1 %>% 
+  select(c(DataSource_name,
+           prob_based,
+           GENDER:SUBURB,
+           IMPPROB:INCOME,
+           -GENDER_4,
+           -SUBURB,
+           -IMPPROB,
+           -VOTE_PARTY_96,
+           -HOMEOWNER_7,
+           -PANELREASON_96,
+           -HIGHEST_QUALIFICATION_7,
+           -COB_7)) %>%
+  as.data.frame() %>% 
+  pivot_longer(GENDER:INCOME,
+               names_to = "Question",
+               values_to = "Answer") %>% 
+  mutate(Answer = as.numeric(Answer)) %>% 
+  mutate(Non_response = ifelse(Answer %in% c(-98, -99), 1, 0)) %>% 
+  select(DataSource_name, prob_based, Non_response) %>% 
+  group_by(prob_based, DataSource_name) %>% 
+  summarise(Percentage = sum(Non_response) / n() * 100) 
+
+Item_non_response %>% 
+  ggplot(aes(x = DataSource_name,
+             y = Percentage,
+             fill = prob_based)) +
+  geom_col() +
+  theme_classic() +
+  labs(fill = "",
+       x = "",
+       title = "Percentage of selecting 'Don't know' or 'Refused to answer'") +
+  theme(axis.text.x = element_text(angle=15, hjust=1)) +
+  geom_text(size = 5, 
+            aes(label = round(Percentage, 2)),
+            vjust = -0.5, 
+            check_overlap = TRUE,
+            position = position_dodge(width = 0.9)) +
+  ylim(c(0,1))
+
+
+```
+
+Figure \@ref(fig:non) illustrates the percentage of respondents in each survey who answered 'Don't know' or 'Refused to answer' for survey questions. The plot reveals that there is a slightly higher percentage of respondents in probability based surveys who provided 'Don't know' or 'Refused to answer' compared to non-probability based surveys. In this scenario, probability based survey panels exhibit a higher prevalence of insufficient effort responding than non-probability based survey panels.
+
 # Limitation
 
 # Summary
