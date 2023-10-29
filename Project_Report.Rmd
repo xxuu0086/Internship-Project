@@ -538,7 +538,7 @@ dat1 %>%
        x = "Hour")
 ```
 
-```{r}
+```{r o2, fig.cap="A histogram of the percentage of at least 120 hours spent on video services and TV per week."}
 # Plot a histogram for long hour on video service and TV
 dat1 %>%
   select(DataSource_name,
@@ -575,6 +575,11 @@ dat1 %>%
   theme(axis.text.x = element_text(angle=15, hjust=1)) 
 ```
 
+In the ACSSM data set, there are six questions that inquire about the time spent on various video and TV services, including 'Free video streaming services', 'Online subscription services', 'Pay TV', 'Free on-demand TV', 'Publicly owned free-to-air TV', and 'Commercial free-to-air TV'. The answer options for these questions are the same, with six possible choices: '0 hours per week', '1-5 hours per week', '6-10 hours per week', '11-15 hours per week', '16-20 hours per week', and 'More than 20 hours per week'. While the hours listed in each answer option may seem normal, even the one that says 'More than 20 hours per week', we might not consider it unusual for someone to spend more than 20 hours watching TV.
+
+However, these six questions pertain to different kinds of video and TV services. To gain a visual overview of the aggregated time spent on all these services, I summed up the hours from all six questions based on respondents' answers. The resulting histogram distribution in Figure \@ref(fig:o1) displays the total time spent on video and TV services per week. This distribution is right-skewed, with a center around 40 hours per week. The distribution also reveals some extreme values, with a few respondents indicating that they spend over 120 hours on video and TV services, which is quite unusual, given that this would mean spending at least 17 hours each day on such activities.
+
+Figure \@ref(fig:o2) illustrates the percentages of respondents who report spending at least 120 hours on video and TV services per week in each survey. Allocating 120 hours to watching video and TV can be considered highly unusual, suggesting that these respondents may not have read the questions properly or have provided random answers. In either case, such respondents can be classified as careless respondents. The data in Figure \@ref(fig:o2) shows that non-probability based survey panels have a majority of careless respondents who report watching more than 120 hours of video and TV per week.
 
 # Limitation
 
