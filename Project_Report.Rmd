@@ -78,6 +78,7 @@ library(shiny)
 library(kableExtra)
 library(gridExtra)
 library(naniar)
+library(knitr)
 
 dat <- haven::read_sav("../Data and survey materials/ACSSM_Merged.sav")
 ```
@@ -107,39 +108,39 @@ To initiate this project, it's essential for me to gain a comprehensive understa
 
 In my journey to learn and master these metrics, I've taken the opportunity to review several articles dedicated to survey response quality. These articles have provided valuable insights into the key metrics that are essential for our project. I have summarized some of the key metrics as follows:
 
-### Metrics Descriptions
+## Metrics Descriptions
 
-__Response time analysis__
+### Response time analysis
 
 - Response time analysis, often referred to as speeding, is a metric that focuses on the time taken to complete a survey or answer questions in a section of a survey. This metric typically relies on page time, which is the duration between the initiation and submission of each survey page or section online. Specifically, it examines instances of extremely small page time values, as such values indicate minimal cognitive processing of survey content. Moreover, this metric involves the use of a "cutoff" time, which is a manually set threshold. Respondents whose page time falls below this "cutoff" time are considered to be responding "carelessly."
 
 - All the surveys in the ACSSM study have recorded the time taken by each individual to complete each section of the survey, so response time analysis can be applied to the ACSSM dataset.
 
-__Straight lining__ 
+### Straight lining
 
 - Straight lining, also known as response pattern analysis, refers to the tendency of respondents to select the same or very similar answer options for each item in a grid. When respondents consistently provide identical responses to a set of questions, it creates a pattern that resembles a straight line, hence the name "straight lining" for this metric. This uniformity in responses across a set of questions suggests that the survey respondents are making minimal effort when completing the survey. In practice, the straight lining are likely to be found for a set of questions with similar wording and the same answer scale. I will be looking for such questions in the ACSSM dataset.
 
-__Consistency approach__
+### Consistency approach
 
 - This metric goes by various names, including individual consistency, inconsistent approach, psychometric antonyms, and individual reliability, and other names. Despite the different terminology, these terms all refer to the same concept, which involves assessing the consistency of survey responses provided by an individual. In essence, this approach typically involves using matched item pairs and comparing the responses to one item with the responses to another item. The matched item pairs should exhibit either a high positive correlation or a high negative correlation. Consistency in the paired responses is essential to ensure that survey respondents are providing thoughtful and careful answers. In contrast, inconsistent paired responses would suggest that respondents are answering the survey carelessly and randomly. 
 
-__Outlier analysis__
+### Outlier analysis
 
 - Outlier analysis is a metric that focuses on data points that are unusual relative to the remainder of a distribution, often seen as extremely values in a distribution. This typically occurs when individual survey respondents who are responding without sufficient effort differ from their more thoughtful counterparts.
 
-__Item non-response__
+### Item non-response 
 
 - Item non-response or missing data in the dataset indicates that survey respondents are attempting to skip survey questions or provide non-substantive answers. This is often observed as empty answers or responses like "don't know" or "don't want to say." Respondents who tend not to provide much effort in thinking about a correct answer to a complex question are more likely to skip the question, which can be considered as "careless" respondents. 
 
-__Midpoint selection__
+### Midpoint selection
 
 - Midpoint selection is a response metric that refers to respondents selecting the middle answer from a list of answer options. The middle answer on the scale is often "Neither agree nor disagree" or "neutral." Similar to the "item non-response" metric, the behavior of choosing the middle value answer can sometimes be interpreted as respondents who are not willing to put in much effort to consider their true response to a question. Instead, they pick for the middle point, indicating neither agreement nor disagreement with the survey question. In this metric, I will focus on questions with ordinal responses, such as "Strongly agree", "Agree", "Neither agree nor disagree", "Disagree", and "Strongly disagree." These types of questions are more likely to elicit middle point selections, which can be considered a form of insufficient effort responding.
 
-__Bogus Items__
+### Bogus Items
 
 - Bogus items are questions that have an obvious correct answer, making an incorrect response indicative of inattention to the question. If a survey respondent fails to provide the correct answer to a question with an obvious solution, it implies that the respondent is responding to the survey carelessly, without properly reading the question. This metric is straightforward to implement; it involves identifying bogus items in the survey data and examining responses that deviate from the correct answer.
 
-__Mahalanobis Distance__
+### Mahalanobis Distance
 
 - Mahalanobis distance is a metric similar to outlier analysis. Both metrics seek extreme values that deviate from the main distribution. The key difference is that Mahalanobis distance is a multivariate outlier technique, whereas outlier analysis examines single variables. This metric calculates the distance of data points from the multivariate center, allowing it to determine whether a respondent falls at the edge of the multivariate distribution formed by responses to all items. If a respondent is positioned far from the distribution in multivariate space, they may be considered unusual and potentially careless in responding their surveys. 
 
@@ -156,7 +157,7 @@ After familiarising ourselves with some of the popular survey response metrics d
 Now, let's take a quick glance at the data set to get an initial impression of its structure and determine whether any cleaning and tidying are required.
 
 ```{r miss1}
-# Visualize missings in variables
+# Visualize missing values in variables
 dat %>%
   naniar::miss_var_summary() %>% 
   head(10) %>% 
@@ -165,7 +166,7 @@ dat %>%
 ```
 
 ```{r miss2}
-# Count total varaible with >10% missings
+# Count total variable with >10% missing values
 miss10 <- dat %>%
   naniar::miss_var_summary() %>% 
   filter(pct_miss > 10) %>% 
@@ -180,7 +181,7 @@ Table \@ref(tab:miss1) displays the top 10 variables with the greatest number of
 There are 91 variables in this data set with more than 10% missing values. These variables will be removed from the data set to ensure that the analysis in this project is based on variables with relatively completed data. This step will contribute to more accurate and less biased results in the survey method data quality analysis.
 
 ```{r}
-# Summarise missings in variables
+# Summarize missing values in variables
 miss_var_list <- dat %>% naniar::miss_var_summary() 
 
 miss_var_list <- miss_var_list[1:91,1] 
@@ -190,8 +191,11 @@ dat <- dat[, !(names(dat) %in% miss_var_list$variable)]
 ```
 
 ```{r}
+# Mutate new column to indicate (non) probability based 
 dat1 <- dat %>% 
-  mutate(prob_based = ifelse(DataSource <= 5, "Probablity based", "Non-probablity based")) %>% # Indicate probability based
+  mutate(prob_based = ifelse(DataSource <= 5, 
+                             "Probablity based",
+                             "Non-probablity based")) %>% # Indicate probability based
   filter(DataSource %in% c(2, 5, 6, 7, 8, 9)) # Filter data source
 
 ```
@@ -241,8 +245,9 @@ We have the cleaned ACSSM data set ready. Now, it's time to connect the metrics 
 ### Response Time Analysis
 
 ```{r time1, fig.cap="Distributions of time spent answering the survey questions for panels."}
+# Plot time distribution
 dat1 %>% 
-  mutate("Section_SUM_main" = Section_Loop_Section4_SectionTimeMinutes + 
+  mutate("Section_SUM_main" = Section_Loop_Section4_SectionTimeMinutes + # sum time of sections
            Section_Loop_Section5_SectionTimeMinutes +
            Section_Loop_Section6_SectionTimeMinutes +
            Section_Loop_Section7_SectionTimeMinutes +
@@ -269,6 +274,7 @@ However, labeling those survey respondents who spent an extended amount of time 
 On the other hand, those who complete a survey in a minimal amount of time can certainly be considered as careless and insufficient effort respondents. Most social research based on survey data relies on the assumption that respondents answer the survey questions to the best of their ability. This, in turn, requires the respondents to meticulously go through all the cognitive steps involved in answering a survey question (Cornesse, 2020). The cognitive response process typically encompasses four essential steps: question comprehension, information retrieval, judgment and estimation, and reporting an answer. Consequently, it's implied that a respondent who responds to a survey with due care and follows these cognitive steps will require a minimum amount of time to thoroughly understand the questions, select the correct responses, and provide answers to the survey.
 
 ```{r, time2, fig.cap="The distribution of time spent answering the survey questions for each panel within an hour."}
+# Plot time distribution with 60 minutes cap
 dat1 %>% 
   mutate("Section_SUM_main" = Section_Loop_Section4_SectionTimeMinutes + 
            Section_Loop_Section5_SectionTimeMinutes +
@@ -297,6 +303,7 @@ Since the distribution of completion times for survey questions is widely spread
 When comparing the box-plot distributions in Figure \@ref(fig:time2), we observe that these distributions are quite similar. They share a similar range and have comparable inter-quartile ranges. However, the non-probability-based surveys exhibit lower median values compared to the probability-based surveys. This implies that more respondents from the non-probability-based surveys spend less time answering the survey questions.
 
 ```{r, time3, fig.cap="The distribution of time spent answering the survey questions for each panel within 10 minutes."}
+# Plot time distribution with 10 minutes cap
 dat1 %>% 
   mutate("Section_SUM_main" = Section_Loop_Section4_SectionTimeMinutes + 
            Section_Loop_Section5_SectionTimeMinutes +
@@ -310,7 +317,9 @@ dat1 %>%
   geom_point() + 
   geom_boxplot() + 
   geom_hline(yintercept = 70 * 6 / 60, color = "purple", size = 1) +
-  geom_text(aes(1.2,70 * 6 / 60, label = "`Cutoff` Time: 7 mins", vjust = 2), show.legend = FALSE, color = "purple") +
+  geom_text(aes(1.2,70 * 6 / 60, label = "`Cutoff` Time: 7 mins", vjust = 2),
+            show.legend = FALSE,
+            color = "purple") +
   scale_color_brewer(palette = "Set1") +
   theme_classic() +
   theme(axis.text.x = element_text(angle=15, hjust=1)) +
@@ -384,6 +393,7 @@ straight_lining %>%
 ```
 
 ```{r s3, fig.cap="Histogram of the Percentage of Straight Lining in Each Panel."}
+# Plot a histogram of percentage of straight lining
 straight_lining %>% 
   select(prob_based, DataSource_name, straight_lining) %>% 
   group_by(prob_based, DataSource_name) %>% 
@@ -398,7 +408,10 @@ straight_lining %>%
   labs(fill = "",
        x = "",
        title = "Percentage of straight lining in each panal") +
-  geom_text(size = 6, aes(label = round(Percentage, 2)), vjust = -0.4, check_overlap = TRUE, position = position_dodge(width = 0.9)) +
+  geom_text(size = 6, aes(label = round(Percentage, 2)),
+            vjust = -0.4,
+            check_overlap = TRUE, 
+            position = position_dodge(width = 0.9)) +
   theme(legend.position = "right")
 ```
 
@@ -423,10 +436,8 @@ BENTYPE_UNPAIDCARE <- dat1 %>%
          UNPAIDCARE) %>% 
   rowwise() %>% 
   mutate(BENTYPE_UNPAID_IER = ifelse((BENTYPE_d_resp == 1) & (UNPAIDCARE == 2), 1, 0)) 
-# %>% 
-#   filter(BENTYPE_UNPAID_IER == 1)
 
-
+# Plot percentages of inconsistent respondings
 BENTYPE_UNPAIDCARE %>% 
   group_by(prob_based, DataSource_name) %>% 
   summarise(Percentage = sum(BENTYPE_UNPAID_IER) / n() * 100) %>% 
@@ -438,7 +449,10 @@ BENTYPE_UNPAIDCARE %>%
   theme_classic() +
   theme(axis.text.x = element_text(angle=15, hjust=1)) +
   labs(fill = "") +
-  geom_text(size = 6, aes(label = round(Percentage, 2)), vjust = -0.5, check_overlap = TRUE, position = position_dodge(width = 0.9))
+  geom_text(size = 6, aes(label = round(Percentage, 2)),
+            vjust = -0.5,
+            check_overlap = TRUE,
+            position = position_dodge(width = 0.9))
 
 ```
 
@@ -447,10 +461,11 @@ The first pair of variables consists of 'BENTYPE_d' and 'UNPAIDCARE'. 'BENTYPE_d
 Figure \@ref(fig:c1) displays a histogram illustrating the percentage of respondents who provided inconsistent answers to the 'BENTYPE_d' and 'UNPAIDCARE' questions. The histogram clearly shows that a greater percentage of respondents in each non-probability based survey provided inconsistent responses to the 'BENTYPE_d' and 'UNPAIDCARE' questions compared to probability-based surveys. This suggests that a greater presence of respondents from non-probability based surveys are being careless and not reading the question instructions properly.
 
 ```{r c2, fig.cap="Scatter plot of variables AGE and FIRSTDRINK"}
-# Correlation AGE AND FIRST DRINK
+# Correct typo in variable name "FIRSTDRINK"
 dat1 <- dat1 %>% 
   mutate("FIRSTDRINK" = FIRSTDRINT)
 
+# Plot a scatter-plot for variables 'AGE' AND 'FIRSTDRINK'
 dat1 %>% 
   select(DataSource_name,
          prob_based,
@@ -491,9 +506,75 @@ dat1 %>%
 
 The second pair of variables includes 'AGE' and 'FIRSTDRINK'. 'AGE' is a question asking for the respondent's current age, while 'FIRSTDRINK' is a question inquiring about the age at which people had their first alcoholic beverage. Both questions are related to age. It's important to note that I will ignore individuals who have never had their first alcoholic beverage for this analysis. Logically, people could have had their first alcoholic drink in the past or in the current year, but they cannot say they had their first alcoholic beverage in the future. This means that the value of the response for 'AGE' should always be greater than or equal to the value of the response for 'FIRSTDRINK'. Anyone who violates this rule by providing inconsistent answers should be considered a careless respondent.
 
-Figure @ref(fig:c2) is a scatter plot of the variables 'AGE' and 'FIRSTDRINK' with a red 45-degree line dividing the plot into two sections. We know that the value of 'AGE' should always be greater than or equal to 'FIRSTDRINK'. If this is the case, all data points should fall on the red line or on the right side of the red line. However, there are two respondents from non-probability-based surveys who violate this rule; they appear on the left side of the 45-degree line. This implies that these two respondents are in their 20s but claim to have had their first alcoholic beverage in their 30s and 50s, respectively. This is impossible, suggesting that these two respondents from non-probability-based surveys are providing careless responses to the 'AGE' and 'FIRSTDRINK' questions.
+Figure \@ref(fig:c2) is a scatter plot of the variables 'AGE' and 'FIRSTDRINK' with a red 45-degree line dividing the plot into two sections. We know that the value of 'AGE' should always be greater than or equal to 'FIRSTDRINK'. If this is the case, all data points should fall on the red line or on the right side of the red line. However, there are two respondents from non-probability based surveys who violate this rule; they appear on the left side of the 45-degree line. This implies that these two respondents are in their age of 20s but they claim to have had their first alcoholic beverage in their 30s and 50s, respectively. This is impossible, suggesting that these two respondents from non-probability based surveys are providing careless responses to the 'AGE' and 'FIRSTDRINK' questions.
 
-Both sets of paired variables, as demonstrated in Figure @ref(fig:c1) and Figure @ref(fig:c2), reveal a higher prevalence of careless responses in non-probability-based survey panels.
+Both sets of paired variables, as demonstrated in Figure \@ref(fig:c1) and Figure \@ref(fig:c2), reveal a higher presence of careless responses in non-probability-based survey panels.
+
+### Outlier analysis
+
+Outlier analysis is a metric that focuses on extreme values within a distribution. If a survey respondent's answer deviates significantly from the majority of other responses and this answer is exceptionally unusual, it could arguably be considered a case of careless and insufficient effort in responding. 
+
+```{r o1, fig.cap="A distribution of the total time spent on video services and TV per week."}
+# Plot time distribution for 'TV_TIME' variables
+dat1 %>%
+  select(DataSource_name,
+         starts_with("TV_TIME")) %>% 
+  pivot_longer(TV_TIME_a_resp:TV_TIME_f_resp,
+               names_to = "TV_TIME",
+               values_to = "HOUR") %>% 
+  mutate(HOUR = ifelse(HOUR < 0, 0, HOUR)) %>% 
+  pivot_wider(names_from = TV_TIME,
+              values_from = HOUR) %>% 
+  unnest() %>% 
+  mutate("TOTAL" = round((TV_TIME_a_resp +
+                            TV_TIME_b_resp+TV_TIME_c_resp +
+                            TV_TIME_d_resp+ TV_TIME_e_resp +
+                            TV_TIME_f_resp) / 6 * 20), 0) %>% 
+  ggplot(aes(x = TOTAL)) +
+  geom_histogram(fill = "#58a6f5")+
+  theme_classic() +
+  labs(title = "Minimum time spent on social media and TV services each week (in hours).",
+       y = "Number of respondents",
+       x = "Hour")
+```
+
+```{r}
+# Plot a histogram for long hour on video service and TV
+dat1 %>%
+  select(DataSource_name,
+         prob_based,
+         starts_with("TV_TIME")) %>% 
+  pivot_longer(TV_TIME_a_resp:TV_TIME_f_resp,
+               names_to = "TV_TIME",
+               values_to = "HOUR") %>% 
+  mutate(HOUR = ifelse(HOUR < 0, 0, HOUR)) %>% 
+  pivot_wider(names_from = TV_TIME,
+              values_from = HOUR) %>% 
+  unnest() %>% 
+  mutate("TOTAL" = round((TV_TIME_a_resp +
+                            TV_TIME_b_resp +
+                            TV_TIME_c_resp +
+                            TV_TIME_d_resp +
+                            TV_TIME_e_resp +
+                            TV_TIME_f_resp) / 6 * 20), 0) %>%
+  mutate(TOTAL = ifelse(TOTAL > 112, 1 ,0)) %>% 
+  group_by(prob_based, DataSource_name) %>% 
+  summarise(Percentage = sum(TOTAL) / n() * 100) %>% 
+  ggplot(aes(x = DataSource_name,
+             y = Percentage,
+             fill = prob_based)) +
+  geom_col() +
+  scale_fill_brewer(palette = "Set1") +
+  theme_classic() +
+  labs(fill = "") +
+  geom_text(size = 4, 
+            aes(label = round(Percentage, 2)),
+            vjust = -0.5, 
+            check_overlap = TRUE,
+            position = position_dodge(width = 0.9)) +
+  theme(axis.text.x = element_text(angle=15, hjust=1)) 
+```
+
 
 # Limitation
 
