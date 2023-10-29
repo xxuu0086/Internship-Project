@@ -60,7 +60,7 @@ knitr::opts_chunk$set(
   message = FALSE,  
   warning = FALSE,  
   error = FALSE,    
-  out.width = "70%",
+  out.width = "80%",
   fig.align = "center",
   fig.width = 8, 
   fig.height = 7,
@@ -266,29 +266,7 @@ However, labeling those survey respondents who spent an extended amount of time 
 
 On the other hand, those who complete a survey in a minimal amount of time can certainly be considered as careless and insufficient effort respondents. Most social research based on survey data relies on the assumption that respondents answer the survey questions to the best of their ability. This, in turn, requires the respondents to meticulously go through all the cognitive steps involved in answering a survey question (Cornesse, 2020). The cognitive response process typically encompasses four essential steps: question comprehension, information retrieval, judgment and estimation, and reporting an answer. Consequently, it's implied that a respondent who responds to a survey with due care and follows these cognitive steps will require a minimum amount of time to thoroughly understand the questions, select the correct responses, and provide answers to the survey.
 
-```{r}
-dat1 %>% 
-  mutate("Section_SUM_main" = Section_Loop_Section4_SectionTimeMinutes + 
-           Section_Loop_Section5_SectionTimeMinutes +
-           Section_Loop_Section6_SectionTimeMinutes +
-           Section_Loop_Section7_SectionTimeMinutes +
-           Section_Loop_Section9_SectionTimeMinutes) %>%
-  filter(Section_SUM_main < 120) %>% 
-  ggplot(aes(x = DataSource_name,
-                   y = Section_SUM_main,
-                   color = prob_based)) +
-  geom_point() + 
-  geom_boxplot() + 
-  # geom_hline(yintercept = 70 * 2 / 60, color = "purple", size = 1) +
-  # geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2), show.legend = FALSE, color = "purple") +
-  scale_color_brewer(palette = "Set1") +
-  theme_classic() +
-  theme(axis.text.x = element_text(angle=15, hjust=1)) +
-  labs(x = "",
-       y = "Total time in minutes",
-       color = "",
-       title = "Distributions of time spent answering the survey questions for panels.")
-
+```{r, time2, fig.cap="The distribution of time spent answering the survey questions for each panel within an hour."}
 dat1 %>% 
   mutate("Section_SUM_main" = Section_Loop_Section4_SectionTimeMinutes + 
            Section_Loop_Section5_SectionTimeMinutes +
@@ -301,16 +279,22 @@ dat1 %>%
                    color = prob_based)) +
   geom_point() + 
   geom_boxplot() + 
-  # geom_hline(yintercept = 70 * 2 / 60, color = "purple", size = 1) +
-  # geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2), show.legend = FALSE, color = "purple") +
   scale_color_brewer(palette = "Set1") +
   theme_classic() +
   theme(axis.text.x = element_text(angle=15, hjust=1)) +
   labs(x = "",
        y = "Total time in minutes",
        color = "",
-       title = "Distributions of time spent answering the survey questions for panels.")
+       title = "Time taken < 60 minutes")
 
+
+```
+
+Since the distribution of completion times for survey questions is widely spread and we are not specifically concerned with extremely large amounts of time spent on surveys, we can set a time range cap and focus on the lower end of the time range. Figure \@ref(fig:time2) presents a box-plot distribution of the time it takes to answer survey questions in less than 60 minutes.
+
+When comparing the box-plot distributions in Figure \@ref(fig:time2), we observe that these distributions are quite similar. They share a similar range and have comparable inter-quartile ranges. However, the non-probability-based surveys exhibit lower median values compared to the probability-based surveys. This implies that more respondents from the non-probability-based surveys spend less time answering the survey questions.
+
+```{r, time3, fig.cap="The distribution of time spent answering the survey questions for each panel within 10 minutes."}
 dat1 %>% 
   mutate("Section_SUM_main" = Section_Loop_Section4_SectionTimeMinutes + 
            Section_Loop_Section5_SectionTimeMinutes +
@@ -323,17 +307,21 @@ dat1 %>%
                    color = prob_based)) +
   geom_point() + 
   geom_boxplot() + 
-  geom_hline(yintercept = 70 * 5 / 60, color = "purple", size = 1) +
-  geom_text(aes(2,70 * 2 / 60, label = "Cutoff Time: 2.33 mins", vjust = -1), show.legend = FALSE, color = "purple") +
+  geom_hline(yintercept = 70 * 6 / 60, color = "purple", size = 1) +
+  geom_text(aes(1.2,70 * 6 / 60, label = "`Cutoff` Time: 7 mins", vjust = 2), show.legend = FALSE, color = "purple") +
   scale_color_brewer(palette = "Set1") +
   theme_classic() +
   theme(axis.text.x = element_text(angle=15, hjust=1)) +
   labs(x = "",
        y = "Total time in minutes",
        color = "",
-       title = "Distributions of time spent answering the survey questions for panels.")
-
+       title = "Time taken < 10 minutes")
 ```
+
+In Figure @ref(fig:time2), we established a time range cap of 60 minutes. Now, we can further narrow down the time range. Figure @ref(fig:time3) displays box-plot distributions for each survey with a time spent of less than 10 minutes. This plot also includes a purple cutoff time line at y = 7 minutes, which I manually set. My rationale behind this cutoff line is that I believe each respondent requires an average of 6 seconds to answer each of the 70 questions in a survey. Therefore, to complete all survey questions, a respondent would need at least 7 minutes. Anyone who takes less than 7 minutes to answer all the questions can be considered as engaging in "careless responding".
+
+Upon comparing the box-plot distributions, it becomes evident that many respondents from non-probability based surveys used less than 10 minutes to complete the survey. In contrast, there was only one respondent in the probability-based surveys who took about 8.5 minutes to complete it. Additionally, about eight respondents from the non-probability-based surveys took less than 7 minutes to complete the survey. According to my decision rule of 7 minutes, these eight respondents are considered to be careless and showing insufficient effort in their responses. In contrast, none of the respondents from the probability-based survey completed the survey in less than 7 minutes. Consequently, the presence of eight careless respondents from the non-probability-based survey suggests that people from the non-probability-based surveys tend to rush through the surveys. This implies that non-probability-based surveys may have worse data quality compared to probability-based surveys when considering the response time analysis metric.
+
 # Limitation
 
 # Summary
