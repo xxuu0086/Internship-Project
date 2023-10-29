@@ -652,6 +652,7 @@ Item_non_response %>%
              y = Percentage,
              fill = prob_based)) +
   geom_col() +
+  scale_fill_brewer(palette = "Set1") +
   theme_classic() +
   labs(fill = "",
        x = "",
@@ -669,9 +670,140 @@ Item_non_response %>%
 
 Figure \@ref(fig:non) illustrates the percentage of respondents in each survey who answered 'Don't know' or 'Refused to answer' for survey questions. The plot reveals that there is a slightly higher percentage of respondents in probability based surveys who provided 'Don't know' or 'Refused to answer' compared to non-probability based surveys. In this scenario, probability based survey panels exhibit a higher prevalence of insufficient effort responding than non-probability based survey panels.
 
+### Combine all metrics
+
+Although nearly all the metrics I have used so far indicate that the non-probability based survey panels have worse data quality compared to probability based survey panels in terms of the number of careless or insufficient effort responses in each survey, I would still like to combine all the careless respondents defined by each metric and examine an overall comparison using all the metrics I have employed in this project. It's worth noting that the metrics "Bogus item" and "Mahalanobis distance", which I initially planned to use in this project, will not be included as I couldn't find the right variables for them. 
+
+```{r combine}
+# Combine all metrics
+speed <- dat1 %>% select(DataSource_name,
+                Section_Loop_Section4_SectionTimeMinutes:Section_Loop_Section9_SectionTimeMinutes,
+                -Section_Loop_Section8_SectionTimeMinutes,
+                prob_based) %>% 
+  rowwise() %>% 
+  mutate("ave" = sum(c(Section_Loop_Section4_SectionTimeMinutes +
+           Section_Loop_Section5_SectionTimeMinutes +
+           Section_Loop_Section6_SectionTimeMinutes +
+           Section_Loop_Section7_SectionTimeMinutes +
+           Section_Loop_Section9_SectionTimeMinutes), na.rm = TRUE) *60 /70) %>% 
+  mutate(ave = ifelse(ave < 7, 1, 0)) %>% 
+  select(ave)
+
+
+straight <- dat1 %>% 
+  select(DataSource_name,
+         starts_with("K6_"),
+         starts_with("TV_TIME_"),
+         starts_with("INTERNET"),
+         starts_with("BENTYPE_")) %>% 
+  rowwise() %>% 
+  mutate(K6_IER = ifelse(length(unique(c(K6_a_resp,
+                                         K6_b_resp,
+                                         K6_c_resp,
+                                         K6_d_resp,
+                                         K6_e_resp,
+                                         K6_f_resp))) == 1, 1, 0)) %>% 
+  mutate(TV_TIME_IER = ifelse(length(unique(c(TV_TIME_a_resp,
+                                              TV_TIME_b_resp,
+                                              TV_TIME_c_resp,
+                                              TV_TIME_d_resp,
+                                              TV_TIME_e_resp,
+                                              TV_TIME_f_resp))) == 1, 1, 0)) %>% 
+  mutate(INTERNET_IER = ifelse(length(unique(c(INTERNET_a_resp,
+                                              INTERNET_b_resp,
+                                              INTERNET_c_resp,
+                                              INTERNET_d_resp))) == 1, 1, 0)) %>% 
+  mutate(BENTYPE_IER = ifelse(sum((c(BENTYPE_a_resp, # All `YES` for 5 BENTYPE => IER
+                                         BENTYPE_b_resp,
+                                         BENTYPE_c_resp,
+                                         BENTYPE_d_resp,
+                                         BENTYPE_e_resp
+                                         ))) == 5, 1, 0)) %>% 
+  mutate(straight_lining = ifelse(sum(K6_IER, 
+                                      TV_TIME_IER,
+                                      INTERNET_IER,
+                                      BENTYPE_IER) >= 2, 1, 0))
+
+consistency1 <- dat1 %>% 
+  select(DataSource_name,
+         prob_based,
+         starts_with("BENTYPE")) %>% 
+  rowwise() %>% 
+  mutate(K6_IER = ifelse(sum((c(BENTYPE_a_resp,
+                                BENTYPE_b_resp,
+                                BENTYPE_c_resp,
+                                BENTYPE_d_resp,
+                                BENTYPE_e_resp
+  ))) == 5, 1, 0))
+
+# 2
+consistency2 <- dat1 %>% 
+  select(DataSource_name,
+         prob_based,
+         BENTYPE_d_resp,
+         UNPAIDCARE) %>% 
+  rowwise() %>% 
+  mutate(BENTYPE_UNPAID_IER = ifelse((BENTYPE_d_resp == 1) & (UNPAIDCARE == 2), 1, 0))
+
+# 3
+consistency3 <- dat1 %>% 
+  select(DataSource_name,
+         prob_based,
+         AGE,
+         FIRSTDRINK) %>% 
+  mutate(AGE = ifelse(AGE < 0, 0, AGE), # set 0
+         FIRSTDRINK = ifelse(FIRSTDRINK < 0, 0, FIRSTDRINK)) %>% 
+  mutate(AGE_FIRSTDRINK = ifelse(AGE < FIRSTDRINK, 1, 0)) 
+
+# Extreme
+extreme <- dat1 %>%
+  select(DataSource_name,
+         starts_with("TV_TIME")) %>% 
+  pivot_longer(TV_TIME_a_resp:TV_TIME_f_resp,
+               names_to = "TV_TIME",
+               values_to = "HOUR") %>% 
+  mutate(HOUR = ifelse(HOUR < 0, 0, HOUR)) %>% 
+  pivot_wider(names_from = TV_TIME,
+              values_from = HOUR) %>% 
+  unnest() %>% 
+  mutate("TOTAL" = round((TV_TIME_a_resp +
+                            TV_TIME_b_resp +
+                            TV_TIME_c_resp +
+                            TV_TIME_d_resp +
+                            TV_TIME_e_resp +
+                            TV_TIME_f_resp) / 6 * 20, 0)) %>% 
+  mutate(TT = ifelse(TOTAL > 112, 1, 0))
+  
+
+dat1 %>% 
+  mutate(flag_speed = speed$ave,
+         flag_healthcon98 = as.numeric(HEALTHCON13),
+         flag_healthcon99 = as.numeric(HEALTHCON14),
+         flag_straight = straight$straight_lining,
+         flag_consistency1 = consistency1$K6_IER,
+         flag_consistency2 = consistency2$BENTYPE_UNPAID_IER,
+         flag_consistency3 = consistency3$AGE_FIRSTDRINK,
+         flag_extreme = extreme$TT) %>% # flag_consistency3,
+  mutate(sum_flag = flag_speed + flag_healthcon98 + flag_healthcon99 + 
+           flag_straight + flag_consistency1 + flag_consistency2 + flag_extreme) %>% 
+  mutate(combine_flag = ifelse(sum_flag > 0, 1, 0)) %>% 
+  select(DataSource_name, prob_based, combine_flag) %>% 
+  group_by(prob_based, DataSource_name) %>% 
+  summarise(percentage = mean(combine_flag)) %>% 
+  group_by(prob_based) %>% 
+  summarise(Percentage = round(mean(percentage) * 100, 2))  %>% 
+  kable(caption = "Average percentage of careless and insufficient effort respondents") %>%
+  kableExtra::kable_styling(latex_options = "hold_position")
+
+```
+
+Table \@ref(tab:combine) presents the final result after combining all metrics. On average, non-probability based survey panels have 7.12% of careless and insufficient effort respondents, which is higher than the 5.66% in probability-based panels in this study. The higher percentage of insufficient effort respondents in non-probability based panels indicates that they have worse data quality compared to probability-based panels.
+
 # Limitation
 
-# Summary
+# Conclusion
+
+Almost all metrics 
 
 \newpage
 
