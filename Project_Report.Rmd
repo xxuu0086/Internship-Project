@@ -410,6 +410,87 @@ Figure \@ref(fig:s3) displays a histogram depicting the percentage of survey res
 
 From both Table \@ref(tab:s2) and Figure \@ref(fig:s3), it becomes evident that a higher occurrence of straight-lining is observed in non-probability-based survey panels. This suggests a greater presence of careless respondents in non-probability-based panels and implies that these panels have poorer data quality in terms of straight lining.
 
+### Consistency Approach
+
+This metric depends on paired items, which are selected pairs of variables from the data set. In a high-quality survey where respondents pay close attention, the responses to these paired items should demonstrate consistency. However, if there are inconsistencies in the responses, it implies that the respondents may not have given enough attention to reading the questions and providing coherent answers. This situation also raises concerns that respondents might be providing random responses to the survey. When a respondent provides a pair of inconsistent responses, they are categorized as careless or insufficient effort respondents. In this data set, I have identified two pairs of questions suitable for applying this consistency approach.
+
+```{r c1, fig.cap="Histogram of the Percentage of inconsistency in responding allowance payment questions" }
+# Consistency: BENTYPE_d (Carer Allowance) == `YES` & UNPAIDCARE == `NO` => Not read the question carefully
+BENTYPE_UNPAIDCARE <- dat1 %>% 
+  select(DataSource_name,
+         prob_based,
+         BENTYPE_d_resp,
+         UNPAIDCARE) %>% 
+  rowwise() %>% 
+  mutate(BENTYPE_UNPAID_IER = ifelse((BENTYPE_d_resp == 1) & (UNPAIDCARE == 2), 1, 0)) 
+# %>% 
+#   filter(BENTYPE_UNPAID_IER == 1)
+
+
+BENTYPE_UNPAIDCARE %>% 
+  group_by(prob_based, DataSource_name) %>% 
+  summarise(Percentage = sum(BENTYPE_UNPAID_IER) / n() * 100) %>% 
+  ggplot(aes(x = DataSource_name,
+             y = Percentage,
+             fill = prob_based)) +
+  geom_col() +
+  scale_fill_brewer(palette = "Set1") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle=15, hjust=1)) +
+  labs(fill = "") +
+  geom_text(size = 6, aes(label = round(Percentage, 2)), vjust = -0.5, check_overlap = TRUE, position = position_dodge(width = 0.9))
+
+```
+
+The first pair of variables consists of 'BENTYPE_d' and 'UNPAIDCARE'. 'BENTYPE_d' is a question asking people whether they receive any carer allowance or carer payment from the government. 'UNPAIDCARE' is a question inquiring whether individuals have spent time providing unpaid care in the last two weeks. The instructions for the 'UNPAIDCARE' question specify that even if respondents have received carer allowances from the government, they should select 'Yes' for this unpaid care question. In other words, respondents who have received carer allowances should still answer 'Yes' to the unpaid care question. However, if respondents are not paying close attention and don't read the question instructions carefully, they might mistakenly select 'No' for the unpaid care question because they have received carer allowances from the government.
+
+Figure \@ref(fig:c1) displays a histogram illustrating the percentage of respondents who provided inconsistent answers to the 'BENTYPE_d' and 'UNPAIDCARE' questions. The histogram clearly shows that a greater percentage of respondents in each non-probability based survey provided inconsistent responses to the 'BENTYPE_d' and 'UNPAIDCARE' questions compared to probability-based surveys. This suggests that a greater presence of respondents from non-probability based surveys are being careless and not reading the question instructions properly.
+
+```{r c2, fig.cap="Scatter plot of variables AGE and FIRSTDRINK"}
+# Correlation AGE AND FIRST DRINK
+dat1 <- dat1 %>% 
+  mutate("FIRSTDRINK" = FIRSTDRINT)
+
+dat1 %>% 
+  select(DataSource_name,
+         prob_based,
+         AGE,
+         FIRSTDRINK) %>% 
+  filter(AGE >= 0,
+         FIRSTDRINK >= 0) %>% 
+  ggplot(aes(x = AGE,
+             y= FIRSTDRINK)) + 
+  geom_point(col = "blue") +
+  geom_point(data = dat1 %>% select(DataSource_name,
+                                   AGE,
+                                   FIRSTDRINK) %>%
+              filter(AGE >= 0,
+                     FIRSTDRINK >= 0,
+                     FIRSTDRINK > AGE), color = "red", size = 3) +
+  geom_abline(slope = 1, color = "red") + 
+  theme_classic() +
+  geom_text(data = dat1 %>% select(DataSource_name,
+                                   prob_based,
+                                   AGE,
+                                   FIRSTDRINK) %>%
+              filter(AGE >= 0,
+                     FIRSTDRINK >= 0,
+                     FIRSTDRINK > AGE), 
+            size = 4,
+            color = "red",
+            aes(label = paste0(DataSource_name, "\n", "(", prob_based, ")")),
+            vjust = -0.5,
+            hjust = 0,
+            check_overlap = TRUE,
+            position = position_dodge(width = 0.9)) +
+  xlim(c(0,125)) +
+  ylim(c(0, 80)) +
+  labs(y = "FIRSTDRINK",
+       title = "Scatter plot of AGE and FIRSTDRINK")
+```
+
+The first pair of variables consists of 'BENTYPE_d' and 'UNPAIDCARE'. 'BENTYPE_d' is a question asking people whether they receive any carer allowance or carer payment from the government. 'UNPAIDCARE' is a question inquiring whether individuals have spent time providing unpaid care in the last two weeks. 
+
 # Limitation
 
 # Summary
