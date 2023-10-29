@@ -489,7 +489,11 @@ dat1 %>%
        title = "Scatter plot of AGE and FIRSTDRINK")
 ```
 
-The first pair of variables consists of 'BENTYPE_d' and 'UNPAIDCARE'. 'BENTYPE_d' is a question asking people whether they receive any carer allowance or carer payment from the government. 'UNPAIDCARE' is a question inquiring whether individuals have spent time providing unpaid care in the last two weeks. 
+The second pair of variables includes 'AGE' and 'FIRSTDRINK'. 'AGE' is a question asking for the respondent's current age, while 'FIRSTDRINK' is a question inquiring about the age at which people had their first alcoholic beverage. Both questions are related to age. It's important to note that I will ignore individuals who have never had their first alcoholic beverage for this analysis. Logically, people could have had their first alcoholic drink in the past or in the current year, but they cannot say they had their first alcoholic beverage in the future. This means that the value of the response for 'AGE' should always be greater than or equal to the value of the response for 'FIRSTDRINK'. Anyone who violates this rule by providing inconsistent answers should be considered a careless respondent.
+
+Figure @ref(fig:c2) is a scatter plot of the variables 'AGE' and 'FIRSTDRINK' with a red 45-degree line dividing the plot into two sections. We know that the value of 'AGE' should always be greater than or equal to 'FIRSTDRINK'. If this is the case, all data points should fall on the red line or on the right side of the red line. However, there are two respondents from non-probability-based surveys who violate this rule; they appear on the left side of the 45-degree line. This implies that these two respondents are in their 20s but claim to have had their first alcoholic beverage in their 30s and 50s, respectively. This is impossible, suggesting that these two respondents from non-probability-based surveys are providing careless responses to the 'AGE' and 'FIRSTDRINK' questions.
+
+Both sets of paired variables, as demonstrated in Figure @ref(fig:c1) and Figure @ref(fig:c2), reveal a higher prevalence of careless responses in non-probability-based survey panels.
 
 # Limitation
 
