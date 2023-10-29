@@ -250,8 +250,6 @@ dat1 %>%
                    color = prob_based)) +
   geom_point() + 
   geom_boxplot() + 
-  # geom_hline(yintercept = 70 * 2 / 60, color = "purple", size = 1) +
-  # geom_text(aes(2,70 * 2 / 60, label = "`Cutoff` Time: 2.33 mins", vjust = 2), show.legend = FALSE, color = "purple") +
   scale_color_brewer(palette = "Set1") +
   theme_classic() +
   theme(axis.text.x = element_text(angle=15, hjust=1)) +
@@ -260,12 +258,15 @@ dat1 %>%
        color = "")
 ```
 
-The above Figure \@ref(fig:time1) illustrates the distributions of time consumed for answering survey questions for different panels. From Figure \@ref(fig:time1), the distributions are widely spread out; some respondents are using less time to complete the survey while some other respondent seems spend a long time to provide answers to the survey questions. 
+Response time, which measures the time it takes for an individual to respond to a set of items, is a widely employed tool for identifying careless and insufficient effort survey respondents(Curran, 2016). We aim to use this response time metric to pinpoint respondents who take an unusually amount of time to answer survey questions. To achieve this, the first step is to gain an overall understanding of the time spent by each survey respondent on the survey questions. I attempted to use a box-plot to illustrate the distribution of time spent for each survey panel.
+
+Above Figure \@ref(fig:time1) illustrates the distribution of all time spent on answering the same survey questions across different survey panels in the study. From Figure \@ref(fig:time1), it's clear that the data points are widely dispersed, with many outliers, often referred to as extreme values. These outliers represent respondents who spent an exceptionally long time answering the survey questions. As shown in the distribution plot, it's appeared that a number of survey respondents spent over 3000 minutes, which is equivalent to 50 hours, on completing the survey. This is highly unusual because very few surveys should take more than an hour to complete.
+
+However, labeling those survey respondents who spent an extended amount of time on survey responses as "careless" or displaying "insufficient effort" is a challenging task. For example, consider a scenario in which a survey respondent initially approaches the survey with utmost diligence, paying close attention to each question. However, due to unforeseen circumstances or more pressing tasks, they may need to interrupt the survey and return to it later. In such cases, these respondents cannot be labeled as careless or showing insufficient effort; they are simply taking longer to complete the survey due to external factors. This demonstrates the complexity of determining whether those who spend an extended time on survey responses should be classified as careless respondents or not.
+
+On the other hand, those who complete a survey in a minimal amount of time can certainly be considered as careless and insufficient effort respondents. Most social research based on survey data relies on the assumption that respondents answer the survey questions to the best of their ability. This, in turn, requires the respondents to meticulously go through all the cognitive steps involved in answering a survey question (Cornesse, 2020). The cognitive response process typically encompasses four essential steps: question comprehension, information retrieval, judgment and estimation, and reporting an answer. Consequently, it's implied that a respondent who responds to a survey with due care and follows these cognitive steps will require a minimum amount of time to thoroughly understand the questions, select the correct responses, and provide answers to the survey.
 
 ```{r}
-# distribution of page time for section 2, 4-9
-
-
 dat1 %>% 
   mutate("Section_SUM_main" = Section_Loop_Section4_SectionTimeMinutes + 
            Section_Loop_Section5_SectionTimeMinutes +
