@@ -107,6 +107,8 @@ To initiate this project, it's essential for me to gain a comprehensive understa
 
 In my journey to learn and master these metrics, I've taken the opportunity to review several articles dedicated to survey response quality. These articles have provided valuable insights into the key metrics that are essential for our project. I have summarized some of the key metrics as follows:
 
+### Metrics Descriptions
+
 __Response time analysis__
 
 - Response time analysis, often referred to as speeding, is a metric that focuses on the time taken to complete a survey or answer questions in a section of a survey. This metric typically relies on page time, which is the duration between the initiation and submission of each survey page or section online. Specifically, it examines instances of extremely small page time values, as such values indicate minimal cognitive processing of survey content. Moreover, this metric involves the use of a "cutoff" time, which is a manually set threshold. Respondents whose page time falls below this "cutoff" time are considered to be responding "carelessly."
@@ -321,6 +323,92 @@ dat1 %>%
 In Figure @ref(fig:time2), we established a time range cap of 60 minutes. Now, we can further narrow down the time range. Figure @ref(fig:time3) displays box-plot distributions for each survey with a time spent of less than 10 minutes. This plot also includes a purple cutoff time line at y = 7 minutes, which I manually set. My rationale behind this cutoff line is that I believe each respondent requires an average of 6 seconds to answer each of the 70 questions in a survey. Therefore, to complete all survey questions, a respondent would need at least 7 minutes. Anyone who takes less than 7 minutes to answer all the questions can be considered as engaging in "careless responding".
 
 Upon comparing the box-plot distributions, it becomes evident that many respondents from non-probability based surveys used less than 10 minutes to complete the survey. In contrast, there was only one respondent in the probability-based surveys who took about 8.5 minutes to complete it. Additionally, about eight respondents from the non-probability-based surveys took less than 7 minutes to complete the survey. According to my decision rule of 7 minutes, these eight respondents are considered to be careless and showing insufficient effort in their responses. In contrast, none of the respondents from the probability-based survey completed the survey in less than 7 minutes. Consequently, the presence of eight careless respondents from the non-probability-based survey suggests that people from the non-probability-based surveys tend to rush through the surveys. This implies that non-probability-based surveys may have worse data quality compared to probability-based surveys when considering the response time analysis metric.
+
+### Straight lining
+
+As previously mentioned, straight lining happens when a respondent provides identical answers to a set of survey questions, suggesting minimal effort in their responses. In the ACSSM data set, we have identified four groups of survey questions, each featuring questions with similar wording and the same answer options. Our objective is to pinpoint the careless and insufficient respondents who exhibit straight lining behavior when answering these four question groups.
+
+Since there are four sets of questions where straight-lining is likely to occur, I have established a decision rule. According to this rule, respondents who straight lining at least two sets of questions will be identified as careless and insufficient respondents. Those who straight lining only one set of questions will not be labeled as careless, as they may genuinely be providing the true answers to those questions.
+
+```{r, s1, fig.cap="An example of straight lining"}
+knitr::include_graphics("Image/straight1.PNG")
+```
+
+The Figure \@ref(fig:s1) provides an illustration of straight lining, 'Agree' is chosen for all five questions and the answers form a straight line. 
+
+```{r s2}
+# Straight lining, use variables: K6, TV_TIME, INTERNET, BENTYPE
+# NOTE: 9 observations (`DataSource`: 2/6/6/6/7/7/7/8/9) select all `YES` in BENTYPE, only one obs reflects on straight-lining
+straight_lining <- dat1 %>% 
+  select(DataSource_name,
+         prob_based,
+         starts_with("K6_"),
+         starts_with("TV_TIME_"),
+         starts_with("INTERNET"),
+         starts_with("BENTYPE_")) %>% 
+  rowwise() %>% 
+  mutate(K6_IER = ifelse(length(unique(c(K6_a_resp,
+                                         K6_b_resp,
+                                         K6_c_resp,
+                                         K6_d_resp,
+                                         K6_e_resp,
+                                         K6_f_resp))) == 1, 1, 0)) %>% 
+  mutate(TV_TIME_IER = ifelse(length(unique(c(TV_TIME_a_resp,
+                                              TV_TIME_b_resp,
+                                              TV_TIME_c_resp,
+                                              TV_TIME_d_resp,
+                                              TV_TIME_e_resp,
+                                              TV_TIME_f_resp))) == 1, 1, 0)) %>% 
+  mutate(INTERNET_IER = ifelse(length(unique(c(INTERNET_a_resp,
+                                              INTERNET_b_resp,
+                                              INTERNET_c_resp,
+                                              INTERNET_d_resp))) == 1, 1, 0)) %>% 
+  mutate(BENTYPE_IER = ifelse(sum((c(BENTYPE_a_resp, # All `YES` for 5 BENTYPE => IER
+                                         BENTYPE_b_resp,
+                                         BENTYPE_c_resp,
+                                         BENTYPE_d_resp,
+                                         BENTYPE_e_resp
+                                         ))) == 5, 1, 0)) %>% 
+  mutate(straight_lining = ifelse(sum(K6_IER, 
+                                      TV_TIME_IER,
+                                      INTERNET_IER,
+                                      BENTYPE_IER) >= 2, 1, 0)) 
+
+straight_lining %>% 
+  select(DataSource_name, straight_lining) %>% 
+  table() %>% 
+  kable(caption = "'1' = Total number of 'Straight lining' respondents") %>% 
+  kable_classic() %>%
+  kableExtra::kable_styling(latex_options = "hold_position")
+
+```
+
+```{r s3, fig.cap="Histogram of the Percentage of Straight Lining in Each Panel."}
+straight_lining %>% 
+  select(prob_based, DataSource_name, straight_lining) %>% 
+  group_by(prob_based, DataSource_name) %>% 
+  summarise(Percentage = mean(straight_lining) * 100) %>% 
+  ggplot(aes(x = DataSource_name,
+             y = Percentage,
+             fill = prob_based)) + 
+  geom_col() +
+  scale_fill_brewer(palette = "Set1") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle=15, hjust=1)) +
+  labs(fill = "",
+       x = "",
+       title = "Percentage of straight lining in each panal") +
+  geom_text(size = 6, aes(label = round(Percentage, 2)), vjust = -0.4, check_overlap = TRUE, position = position_dodge(width = 0.9)) +
+  theme(legend.position = "right")
+```
+
+Table \@ref(tab:s2) presents the total number of respondents identified as "careless" according to my straight-lining decision rule. This rule categorizes those who attempted straight lining in at least two question sets as careless respondents. In the table, the '0' column indicates the number of respondents in each survey who were not identified as careless due to straight-lining, while the '1' column shows the count of respondents engaging in straight-lining for each survey.
+
+Upon examining the table, it becomes apparent that the probability-based surveys "Life in Australia" and "SMS push to web" have only a small number of respondents in the single digits who engaged in straight-lining. In contrast, the non-probability-based surveys "Panel 1", "Panel 2", "Panel 3", and "Panel 4" each have 39, 44, 39, and 22 respondents, respectively, who were identified as "straight liners". These numbers are more than double the counts observed in the probability-based surveys.
+
+Figure \@ref(fig:s3) displays a histogram depicting the percentage of survey respondents engaged in straight-lining for each survey. A comparison of the percentages in Figure \@ref(fig:s3) reveals that non-probability-based survey panels have a notably higher percentage of "straight-lining" respondents in comparison to probability-based survey panels. A higher percentage of "straight-lining" respondents within a survey indicates that a greater number of respondents in that survey are likely to be engaged in straight-lining, while surveys with lower percentages have fewer such respondents.
+
+From both Table \@ref(tab:s2) and Figure \@ref(fig:s3), it becomes evident that a higher occurrence of straight-lining is observed in non-probability-based survey panels. This suggests a greater presence of careless respondents in non-probability-based panels and implies that these panels have poorer data quality in terms of straight lining.
 
 # Limitation
 
