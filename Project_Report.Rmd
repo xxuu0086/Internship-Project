@@ -671,6 +671,7 @@ Although nearly all the metrics I have used so far indicate that the non-probabi
 
 ```{r combine}
 # Combine all metrics
+# Identify speeding respondents
 speed <- dat1 %>% select(DataSource_name,
                 Section_Loop_Section4_SectionTimeMinutes:Section_Loop_Section9_SectionTimeMinutes,
                 -Section_Loop_Section8_SectionTimeMinutes,
@@ -684,7 +685,7 @@ speed <- dat1 %>% select(DataSource_name,
   mutate(ave = ifelse(ave < 7, 1, 0)) %>% 
   select(ave)
 
-
+# Identify straight lining respondents
 straight <- dat1 %>% 
   select(DataSource_name,
          starts_with("K6_"),
@@ -719,6 +720,7 @@ straight <- dat1 %>%
                                       INTERNET_IER,
                                       BENTYPE_IER) >= 2, 1, 0))
 
+# Identify inconsistent answer respondents
 consistency1 <- dat1 %>% 
   select(DataSource_name,
          prob_based,
@@ -731,7 +733,7 @@ consistency1 <- dat1 %>%
                                 BENTYPE_e_resp
   ))) == 5, 1, 0))
 
-# 2
+
 consistency2 <- dat1 %>% 
   select(DataSource_name,
          prob_based,
@@ -740,7 +742,7 @@ consistency2 <- dat1 %>%
   rowwise() %>% 
   mutate(BENTYPE_UNPAID_IER = ifelse((BENTYPE_d_resp == 1) & (UNPAIDCARE == 2), 1, 0))
 
-# 3
+
 consistency3 <- dat1 %>% 
   select(DataSource_name,
          prob_based,
@@ -750,7 +752,7 @@ consistency3 <- dat1 %>%
          FIRSTDRINK = ifelse(FIRSTDRINK < 0, 0, FIRSTDRINK)) %>% 
   mutate(AGE_FIRSTDRINK = ifelse(AGE < FIRSTDRINK, 1, 0)) 
 
-# Extreme
+# Identify outlier from TV_TIME
 extreme <- dat1 %>%
   select(DataSource_name,
          starts_with("TV_TIME")) %>% 
@@ -769,7 +771,7 @@ extreme <- dat1 %>%
                             TV_TIME_f_resp) / 6 * 20, 0)) %>% 
   mutate(TT = ifelse(TOTAL > 112, 1, 0))
   
-
+# Combine results
 dat1 %>% 
   mutate(flag_speed = speed$ave,
          flag_healthcon98 = as.numeric(HEALTHCON13),
@@ -818,7 +820,7 @@ There are several limitations to consider when using response metrics in this pr
 
 # Conclusion
 
-Almost all metrics 
+In conclusion, the results from nearly all the metrics indicate a higher presence of careless and insufficient effort respondents in non-probability based panels. When we combine the results from each of the metrics, it becomes evident that, on average, non-probability based survey panels exhibit a higher percentage of careless and insufficient effort respondents compared to probability based survey panels. This provides strong evidence in support of the hypothesis that non-probability based panels have worse data quality when compared to probability based panels.
 
 
 \newpage
