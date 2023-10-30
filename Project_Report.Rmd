@@ -794,20 +794,65 @@ dat1 %>%
 
 Table \@ref(tab:combine) presents the final result after combining all metrics. On average, non-probability based survey panels have 7.12% of careless and insufficient effort respondents, which is higher than the 5.66% in probability-based panels in this study. The higher percentage of insufficient effort respondents in non-probability based panels indicates that they have worse data quality compared to probability-based panels.
 
-# Limitation
+```{r}
+d <- dat1 %>% 
+  mutate(flag_speed = speed$ave,
+         flag_healthcon98 = as.numeric(HEALTHCON13),
+         flag_healthcon99 = as.numeric(HEALTHCON14),
+         flag_straight = straight$straight_lining,
+         flag_consistency1 = consistency1$K6_IER,
+         flag_consistency2 = consistency2$BENTYPE_UNPAID_IER,
+         flag_consistency3 = consistency3$AGE_FIRSTDRINK,
+         flag_extreme = extreme$TT) %>% # flag_consistency3,
+  mutate(sum_flag = flag_speed + flag_healthcon98 + flag_healthcon99 + 
+           flag_straight + flag_consistency1 + flag_consistency2 + flag_extreme) %>% 
+  mutate(combine_flag = ifelse(sum_flag > 0, 1, 0)) %>% 
+  select(DataSource_name, prob_based, combine_flag) %>% 
+  group_by(prob_based, DataSource_name) %>% 
+  summarise(percentage = mean(combine_flag)) %>% 
+  group_by(prob_based) %>% 
+  summarise(Percentage = mean(percentage))
 
-# Chanllenges
-- Understand the metrics
-- matching the metrics to variables
+set.seed(1234)
+n <- nrow(dat1)
+B <- 10000
+boot <- rep(NA, B)
+for (i in 1:B) {
+  dd <- dat1 %>% 
+    select(DataSource_name, prob_based) %>% 
+    mutate(combine_flag = sample(c(1,0), n, replace = TRUE)) %>% 
+    select(DataSource_name, prob_based, combine_flag) %>% 
+    group_by(prob_based, DataSource_name) %>% 
+    summarise(percentage = mean(combine_flag)) %>% 
+    group_by(prob_based) %>% 
+    summarise(percentage1 = mean(percentage))
+    
+  boot[i] <- dd[[2,2]] - dd[[1,2]]
+}
+
+fraudulent_boot.CI <- quantile(boot, c(0.05, 0.975))
+
+length(boot[boot < (d[[2,2]] - d[[1,2]])]) / 10000 # p-value
+# hist(boot)
+```
+
+
+
+# Chanllenges and Limitation
+
+### Chanllenging part
+
+The most challenging task in this project is linking the variables to the metrics. For some metrics, we know the types of variables they require. For instance, response time analysis metrics can only be applied to page time variables, which record the time each individual takes to complete survey questions. So, for this metric, our main task is to find suitable time variables.
+
+However, for some metrics, the process is less straightforward. We must manually identify the variables for these metrics, and this can be a particularly challenging aspect of the project, requiring careful consideration.
+
+Take the consistency metric, for example, which involves working with two pairs of variables. The relationship between these variables isn't always obvious, so we need to explore all possible combinations of responses from the paired survey questions. For instance, some combinations of responses provided by the respondents are abnormal and can be considered as careless and insufficient effort in responding. This means we must thoroughly examine all variables, check all responses for each variable, and search for potential matches for each metric. Often, we need to refer to the data dictionary and the ACSSM study technical report when the meanings of variables are unclear. Additionally, we need to conduct tests on these potential variables to determine their suitability for implementing the metrics.
+
+
 
 # Conclusion
 
 Almost all metrics 
-
-library(kableExtra)
-library(gridExtra)
-library(naniar)
-library(knitr)
 
 
 \newpage
