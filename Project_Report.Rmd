@@ -73,8 +73,8 @@ knitr::opts_chunk$set(
 ```{r}
 # Load packages and data
 library(tidyverse)
+library(bookdown)
 library(haven)
-library(shiny)
 library(kableExtra)
 library(gridExtra)
 library(naniar)
@@ -86,7 +86,7 @@ dat <- haven::read_sav("../Data and survey materials/ACSSM_Merged.sav")
 
 # Introduction and Motivation
 
-In the age of big data, survey research stands out as a fundamental tool for gathering valuable insights from the population. The quality of the responses collected holds paramount importance in making informed decisions. Recent advancements in technology and communication methods have led to a rise in surveys that assessible exclusively to specific groups through online platforms and social media. These surveys are designed for particular purposes, offering less costly and time-efficient data collection. This approach is commonly known as non-probability-based survey methods, in contrast to surveys that aim to collect data from the entire population, referred to as probability-based methods.
+In the age of big data, survey research stands out as a fundamental tool for gathering valuable insights from the population. The quality of the responses collected holds paramount importance in making informed decisions. Recent advancements in technology and communication methods have led to a rise in surveys that accessible exclusively to specific groups through online platforms and social media. These surveys are designed for particular purposes, offering less costly and time-efficient data collection. This approach is commonly known as non-probability-based survey methods, in contrast to surveys that aim to collect data from the entire population, referred to as probability-based methods.
 
 Probability-based and non-probability-based survey methods represent two distinct approaches to data collection, prompting our curiosity about the data quality associated with each. However, response quality in non-probability online panels has received limited attention, and there is a scarcity of research on the performance of non-probability-based methods. The study in this project sets out to address the fundamental question: How do probability-based and non-probability-based survey methods compare in terms of data quality?
 
@@ -233,11 +233,6 @@ To facilitate the comparison and improve the clarity of the analysis, I have add
 Now, after cleaning and organizing the data set, the new ACSSM data set contains 4,640 observations and 201 variables.
 
 We have the cleaned ACSSM data set ready. Now, it's time to connect the metrics with the variables in the data set. To simplify the connection process, I have created an Excel spreadsheet. In this spreadsheet, I've listed all the questions from different sections of the survey, along with some potentially applicable metrics listed on the other side of the spreadsheet. Using Excel spreadsheet provides an overview of all survey questions, which will facilitate the connection between metrics and variables. You can find this Excel spreadsheet named "Survey_question.xlsx" in the "Project_related_material" folder.
-
-
-# Chanllenges
-- Understand the metrics
-- matching the metrics to variables
 
 
 # Analysis
@@ -801,24 +796,46 @@ Table \@ref(tab:combine) presents the final result after combining all metrics. 
 
 # Limitation
 
+# Chanllenges
+- Understand the metrics
+- matching the metrics to variables
+
 # Conclusion
 
 Almost all metrics 
+
+library(kableExtra)
+library(gridExtra)
+library(naniar)
+library(knitr)
+
 
 \newpage
 
 # Reference
 
-__Citation of R package__
+Carina Cornesse1,2 and Annelies G. Blom1,3. 2020. "Response Quality in Nonprobability and Probability-based Online Panels". Sociological Methods & Research. 52: 1-30. https://doi.org/10.1177/0049124120914940
 
-Wickham H, Averick M, Bryan J, Chang W, McGowan LD, François R, Grolemund G, Hayes A, Henry L, Hester J, Kuhn M, Pedersen TL,
-  Miller E, Bache SM, Müller K, Ooms J, Robinson D, Seidel DP, Spinu V, Takahashi K, Vaughan D, Wilke C, Woo K, Yutani H (2019).
-  “Welcome to the tidyverse.” _Journal of Open Source Software_, *4*(43), 1686. doi:10.21105/joss.01686
-  <https://doi.org/10.21105/joss.01686>.
+Paul G. Curran. 2016. "Methods for the detection of carelessly invalid responses in survey data". Journal of Experimental Social Psychology. 66: 4-19. 
+
+Wickham H, Averick M, Bryan J, Chang W, McGowan LD, François R, Grolemund G, Hayes A, Henry L, Hester J, Kuhn M, Pedersen TL, Miller E, Bache SM, Müller K, Ooms J, Robinson D, Seidel DP, Spinu V, Takahashi K, Vaughan D, Wilke C, Woo K, Yutani H (2019). “Welcome to the tidyverse.” _Journal of Open Source Software_, *4*(43), 1686. doi:10.21105/joss.01686  <https://doi.org/10.21105/joss.01686>.
   
-Xie Y (2023). _bookdown: Authoring Books and Technical Documents with R Markdown_. R
-  package version 0.35, <https://github.com/rstudio/bookdown>.
+Xie Y (2023). _bookdown: Authoring Books and Technical Documents with R Markdown_. R package version 0.35, <https://github.com/rstudio/bookdown>.
+
+Wickham H, Miller E, Smith D (2023). _haven: Import and Export 'SPSS', 'Stata' and 'SAS' Files_. R package version 2.5.3, <https://CRAN.R-project.org/package=haven>.
   
+Zhu H (2021). _kableExtra: Construct Complex Table with 'kable' and Pipe Syntax_. R package version 1.3.4,
+<https://CRAN.R-project.org/package=kableExtra>.
+
+Auguie B (2017). _gridExtra: Miscellaneous Functions for "Grid" Graphics_. R package version 2.3, <https://CRAN.R-project.org/package=gridExtra>.
+
+Tierney N, Cook D (2023). “Expanding Tidy Data Principles to Facilitate Missing Data Exploration, Visualization and Assessment of Imputations.” _Journal of Statistical Software_, *105*(7), 1-31. doi:10.18637/jss.v105.i07 <https://doi.org/10.18637/jss.v105.i07>.
+
+Xie Y (2023). _knitr: A General-Purpose Package for Dynamic Report Generation in R_. R package version 1.43, <https://yihui.org/knitr/>.
+
+Yihui Xie (2015) Dynamic Documents with R and knitr. 2nd edition. Chapman and Hall/CRC. ISBN 978-1498716963
+
+Yihui Xie (2014) knitr: A Comprehensive Tool for Reproducible Research in R. In Victoria Stodden, Friedrich Leisch and Roger D. Peng, editors, Implementing Reproducible Computational Research. Chapman and Hall/CRC. ISBN 978-1466561595
 \newpage
 
 # Appendix: All code for this report
